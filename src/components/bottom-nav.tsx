@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, BookOpen, BarChart3, ClipboardList, Settings } from "lucide-react"
+import { Home, BookOpen, BarChart3, CalendarDays, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { href: "/", label: "Hoje", icon: Home },
   { href: "/registrar", label: "Registrar", icon: BookOpen },
+  { href: "/planejar", label: "Planejar", icon: CalendarDays },
   { href: "/progresso", label: "Progresso", icon: BarChart3 },
-  { href: "/simulados", label: "Simulados", icon: ClipboardList },
   { href: "/config", label: "Config", icon: Settings },
 ]
 

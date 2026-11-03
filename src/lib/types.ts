@@ -162,6 +162,27 @@ export interface StudySchedule {
   active: boolean
 }
 
+export interface WeeklyPlan {
+  id: string
+  week_start_date: string
+  week_label: string | null
+  notes: string | null
+  created_at: string
+  updated_at: string
+  topics?: WeeklyPlanTopic[]
+}
+
+export interface WeeklyPlanTopic {
+  id: string
+  weekly_plan_id: string
+  subject_id: string
+  goal: string | null
+  question_target: number | null
+  status: 'pending' | 'in_progress' | 'done'
+  order_index: number
+  subject?: Subject
+}
+
 // Computed types (not in DB)
 
 export interface DailyOverview {

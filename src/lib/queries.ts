@@ -3,6 +3,7 @@ import type {
   Subject, StudyEntry, ReviewQueueItem, SubjectMastery,
   ProgressionConfig, WeeklyTarget, DailyPlan, MockExam,
   UserSettings, TargetExam, StudySchedule, MockExamBreakdown,
+  WeeklyPlan, WeeklyPlanTopic,
 } from './types'
 import { format } from 'date-fns'
 
@@ -249,6 +250,87 @@ export async function getStudySchedule(): Promise<StudySchedule[]> {
     .order('start_time')
   if (error) throw error
   return data
+}
+
+// ─── Weekly Plan ───
+
+export async function getWeeklyPlans(): Promise<WeeklyPlan[]> {
+  const { data, error } = await supabase
+    .from('weekly_plan')
+    .select('*, topics:weekly_plan_topics(*, subject:subjects(*))')
+    .order('week_start_date', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+export async function getCurrentWeeklyPlan(): Promise<WeeklyPlan | null> {
+  const today = format(new Date(), 'yyyy-MM-dd')
+  const { data, error } = await supabase
+    .from('weekly_plan')
+    .select('*, topics:weekly_plan_topics(*, subject:subjects(*))')
+    .lte('week_start_date', today)
+    .order('week_start_date', { ascending: false })
+    .limit(1)
+    .single()
+  if (error) return null
+  return data
+}
+
+export async function createWeeklyPlan(plan: {
+  week_start_date: string
+  week_label?: string
+  notes?: string
+}): Promise<WeeklyPlan> {
+  const { data, error } = await supabase
+    .from('weekly_plan')
+    .insert(plan)
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function addWeeklyPlanTopic(topic: {
+  weekly_plan_id: string
+  subject_id: string
+  goal?: string
+  question_target?: number
+  order_index?: number
+}): Promise<WeeklyPlanTopic> {
+  const { data, error } = await supabase
+    .from('weekly_plan_topics')
+    .insert(topic)
+    .select('*, subject:subjects(*)')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function updateWeeklyPlanTopic(
+  id: string,
+  update: Partial<WeeklyPlanTopic>
+): Promise<void> {
+  const { error } = await supabase
+    .from('weekly_plan_topics')
+    .update(update)
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function deleteWeeklyPlanTopic(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('weekly_plan_topics')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function deleteWeeklyPlan(id: string): Promise<void> {
+  const { error } = await supabase
+    .from('weekly_plan')
+    .delete()
+    .eq('id', id)
+  if (error) throw error
 }
 
 // ─── Stats helpers ───
