@@ -78,12 +78,12 @@ export function checkSnowballRisk(
 export function getSnowballMessage(severity: 'none' | 'mild' | 'moderate' | 'severe'): string {
   switch (severity) {
     case 'none':
-      return 'Revisões em dia! Continue assim 💪'
+      return 'Revisões em dia! Continue assim.'
     case 'mild':
-      return 'Algumas revisões acumularam. Vamos colocar em dia? 📚'
+      return 'Algumas revisões acumularam. Vamos colocar em dia?'
     case 'moderate':
-      return 'Revisões se acumulando! Redistribuí nos próximos dias pra não virar bola de neve ⚡'
+      return 'Revisões se acumulando! Redistribuí nos próximos dias pra não virar bola de neve.'
     case 'severe':
-      return 'Muitas revisões pendentes! Priorizei as mais urgentes pra recuperar o ritmo 🎯'
+      return 'Muitas revisões pendentes! Priorizei as mais urgentes pra recuperar o ritmo.'
   }
 }

@@ -22,38 +22,44 @@ import {
 import { cn } from "@/lib/utils"
 
 const statusConfig = {
-  pending: { label: "Pendente", icon: Circle, color: "text-slate-400" },
-  in_progress: { label: "Em andamento", icon: Clock, color: "text-amber-500" },
-  done: { label: "Concluído", icon: CheckCircle2, color: "text-emerald-500" },
+  pending: { label: "Pendente", icon: Circle, color: "text-slate-400 dark:text-slate-500" },
+  in_progress: { label: "Em andamento", icon: Clock, color: "text-amber-500 dark:text-amber-400" },
+  done: { label: "Concluído", icon: CheckCircle2, color: "text-emerald-500 dark:text-emerald-400" },
 }
 
 export default function PlanejarPage() {
   const [plans, setPlans] = useState<WeeklyPlan[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [loading, setLoading] = useState(true)
-
-  // Current viewed week
   const [viewDate, setViewDate] = useState<Date | null>(null)
-
-  useEffect(() => {
-    if (!viewDate) setViewDate(new Date())
-  }, [viewDate])
-
-  // Add topic form
   const [showAddTopic, setShowAddTopic] = useState(false)
   const [selectedSubject, setSelectedSubject] = useState("")
   const [expandedParent, setExpandedParent] = useState("")
   const [topicGoal, setTopicGoal] = useState("")
   const [topicQuestions, setTopicQuestions] = useState("")
-
-  // New week label
   const [weekLabel, setWeekLabel] = useState("")
   const [weekNotes, setWeekNotes] = useState("")
 
-  if (!viewDate) {
+  useEffect(() => {
+    if (!viewDate) setViewDate(new Date())
+    async function loadData() {
+      try {
+        const [p, s] = await Promise.all([getWeeklyPlans(), getSubjectsTree()])
+        setPlans(p)
+        setSubjects(s)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadData()
+  }, [viewDate])
+
+  if (!viewDate || loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-slate-400">Carregando...</div>
+        <div className="animate-pulse text-slate-400 dark:text-slate-500">Carregando...</div>
       </div>
     )
   }
@@ -67,20 +73,6 @@ export default function PlanejarPage() {
 
   const isCurrentWeek = isSameWeek(new Date(), weekStart, { weekStartsOn: 1 })
   const isFutureWeek = weekStart > new Date()
-
-  const load = useCallback(async () => {
-    try {
-      const [p, s] = await Promise.all([getWeeklyPlans(), getSubjectsTree()])
-      setPlans(p)
-      setSubjects(s)
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => { load() }, [load])
 
   async function handleCreatePlan() {
     try {
@@ -155,7 +147,7 @@ export default function PlanejarPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-slate-400">Carregando...</div>
+        <div className="animate-pulse text-slate-400 dark:text-slate-500">Carregando...</div>
       </div>
     )
   }
@@ -167,27 +159,27 @@ export default function PlanejarPage() {
     <div className="px-4 pt-6 space-y-4">
       {/* Header with week nav */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Planejar Semana</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Planejar Semana</h1>
         <div className="flex items-center justify-between mt-2">
-          <button onClick={() => setViewDate(addWeeks(viewDate, -1))} className="p-2 hover:bg-slate-100 rounded-lg">
-            <ChevronLeft className="h-5 w-5 text-slate-600" />
+          <button onClick={() => setViewDate(addWeeks(viewDate, -1))} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+            <ChevronLeft className="h-5 w-5 text-slate-600 dark:text-slate-300" />
           </button>
           <div className="text-center">
-            <p className="text-sm font-semibold text-slate-700">{weekLabel_}</p>
-            {isCurrentWeek && <Badge className="text-[10px] bg-indigo-100 text-indigo-700 border-0">Semana atual</Badge>}
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{weekLabel_}</p>
+            {isCurrentWeek && <Badge className="text-[10px] bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 border-0">Semana atual</Badge>}
             {isFutureWeek && <Badge variant="outline" className="text-[10px]">Próxima</Badge>}
           </div>
-          <button onClick={() => setViewDate(addWeeks(viewDate, 1))} className="p-2 hover:bg-slate-100 rounded-lg">
-            <ChevronRight className="h-5 w-5 text-slate-600" />
+          <button onClick={() => setViewDate(addWeeks(viewDate, 1))} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+            <ChevronRight className="h-5 w-5 text-slate-600 dark:text-slate-300" />
           </button>
         </div>
       </div>
 
       {/* No plan yet — create one */}
       {!currentPlan && (
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm dark:bg-slate-900">
           <CardContent className="p-4 space-y-3">
-            <p className="text-sm text-slate-500 text-center">
+            <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
               Nenhum plano pra essa semana ainda
             </p>
             <div className="space-y-2">
@@ -195,13 +187,13 @@ export default function PlanejarPage() {
                 placeholder="Título da semana (opcional)"
                 value={weekLabel}
                 onChange={e => setWeekLabel(e.target.value)}
-                className="border-slate-200 text-sm"
+                className="border-slate-200 dark:border-slate-700 text-sm"
               />
               <Textarea
                 placeholder="Notas ou objetivos gerais (opcional)"
                 value={weekNotes}
                 onChange={e => setWeekNotes(e.target.value)}
-                className="border-slate-200 text-sm resize-none"
+                className="border-slate-200 dark:border-slate-700 text-sm resize-none"
                 rows={2}
               />
             </div>
@@ -217,26 +209,26 @@ export default function PlanejarPage() {
       {currentPlan && (
         <>
           {/* Week summary */}
-          <Card className="border-0 shadow-sm bg-indigo-50">
+          <Card className="border-0 shadow-sm bg-indigo-50 dark:bg-indigo-950">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   {currentPlan.week_label && (
-                    <p className="text-sm font-semibold text-indigo-900">{currentPlan.week_label}</p>
+                    <p className="text-sm font-semibold text-indigo-900 dark:text-indigo-100">{currentPlan.week_label}</p>
                   )}
-                  <p className="text-xs text-indigo-600">
+                  <p className="text-xs text-indigo-600 dark:text-indigo-400">
                     {topicsDone}/{topicsCount} temas concluídos
                   </p>
                 </div>
                 <div className="flex items-center gap-1">
                   <Target className="h-4 w-4 text-indigo-500" />
-                  <span className="text-sm font-bold text-indigo-700">
+                  <span className="text-sm font-bold text-indigo-700 dark:text-indigo-300">
                     {topicsCount}/3
                   </span>
                 </div>
               </div>
               {currentPlan.notes && (
-                <p className="text-xs text-indigo-600/70 mt-2">{currentPlan.notes}</p>
+                <p className="text-xs text-indigo-600/70 dark:text-indigo-400/70 mt-2">{currentPlan.notes}</p>
               )}
             </CardContent>
           </Card>
@@ -248,7 +240,7 @@ export default function PlanejarPage() {
               const StatusIcon = config.icon
 
               return (
-                <Card key={topic.id} className="border-0 shadow-sm">
+                <Card key={topic.id} className="border-0 shadow-sm dark:bg-slate-900">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
                       <button
@@ -265,20 +257,20 @@ export default function PlanejarPage() {
                           />
                           <p className={cn(
                             "text-sm font-semibold truncate",
-                            topic.status === "done" && "line-through text-slate-400"
+                            topic.status === "done" && "line-through text-slate-400 dark:text-slate-500"
                           )}>
                             {topic.subject?.name}
                           </p>
                         </div>
                         {topic.goal && (
-                          <p className="text-xs text-slate-500 mt-1">{topic.goal}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{topic.goal}</p>
                         )}
                         <div className="flex items-center gap-3 mt-1.5">
                           <Badge variant="outline" className="text-[10px]">
                             {config.label}
                           </Badge>
                           {topic.question_target && (
-                            <span className="text-[10px] text-slate-400">
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500">
                               Meta: {topic.question_target}q
                             </span>
                           )}
@@ -286,9 +278,9 @@ export default function PlanejarPage() {
                       </div>
                       <button
                         onClick={() => handleDeleteTopic(topic.id)}
-                        className="shrink-0 p-1.5 hover:bg-red-50 rounded-lg transition-colors"
+                        className="shrink-0 p-1.5 hover:bg-red-50 dark:hover:bg-red-950 rounded-lg transition-colors"
                       >
-                        <Trash2 className="h-4 w-4 text-slate-300 hover:text-red-500" />
+                        <Trash2 className="h-4 w-4 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400" />
                       </button>
                     </div>
                   </CardContent>
@@ -302,7 +294,7 @@ export default function PlanejarPage() {
             <Button
               variant="outline"
               onClick={() => setShowAddTopic(true)}
-              className="w-full border-dashed border-slate-300 text-slate-500 hover:text-indigo-600 hover:border-indigo-300"
+              className="w-full border-dashed border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300"
             >
               <Plus className="h-4 w-4 mr-2" />
               Adicionar Tema ({topicsCount}/3)
@@ -310,19 +302,19 @@ export default function PlanejarPage() {
           )}
 
           {topicsCount >= 3 && (
-            <p className="text-xs text-slate-400 text-center">
+            <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
               Máximo de 3 temas por semana atingido
             </p>
           )}
 
           {/* Add topic form */}
           {showAddTopic && (
-            <Card className="border-0 shadow-sm border-l-4 border-l-indigo-500">
+            <Card className="border-0 shadow-sm dark:bg-slate-900 border-l-4 border-l-indigo-500">
               <CardContent className="p-4 space-y-3">
-                <p className="text-sm font-semibold text-slate-700">Novo tema da semana</p>
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Novo tema da semana</p>
 
                 {/* Subject picker */}
-                <div className="max-h-48 overflow-y-auto space-y-0.5 bg-slate-50 rounded-lg p-2">
+                <div className="max-h-48 overflow-y-auto space-y-0.5 bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
                   {subjects.map((parent) => (
                     <div key={parent.id}>
                       <button
@@ -337,15 +329,15 @@ export default function PlanejarPage() {
                         className={cn(
                           "w-full text-left px-2 py-1.5 rounded text-sm transition-colors",
                           selectedSubject === parent.id
-                            ? "bg-indigo-100 text-indigo-700 font-medium"
-                            : "hover:bg-white"
+                            ? "bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-medium"
+                            : "hover:bg-white dark:hover:bg-slate-700"
                         )}
                       >
                         <div className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: parent.color }} />
                           {parent.name}
                           {parent.children?.length ? (
-                            <span className="text-[10px] text-slate-400 ml-auto">
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500 ml-auto">
                               {expandedParent === parent.id ? "▼" : "▶"}
                             </span>
                           ) : null}

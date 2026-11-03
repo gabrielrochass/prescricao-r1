@@ -90,17 +90,17 @@ export default function ConfigPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-slate-400">Carregando...</div>
+        <div className="animate-pulse text-slate-400 dark:text-slate-500">Carregando...</div>
       </div>
     )
   }
 
   return (
     <div className="px-4 pt-6 space-y-4 pb-8">
-      <h1 className="text-2xl font-bold text-slate-900">Configurações</h1>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Configurações</h1>
 
       {/* Profile */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm dark:bg-slate-900">
         <CardHeader className="pb-2 px-4 pt-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <User className="h-4 w-4 text-indigo-500" />
@@ -109,19 +109,19 @@ export default function ConfigPage() {
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-3">
           <div className="space-y-1.5">
-            <Label className="text-xs text-slate-500">Seu nome</Label>
+            <Label className="text-xs text-slate-500 dark:text-slate-400">Seu nome</Label>
             <Input
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="Como quer ser chamada?"
-              className="border-slate-200"
+              className="border-slate-200 dark:border-slate-700"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Progression */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm dark:bg-slate-900">
         <CardHeader className="pb-2 px-4 pt-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Target className="h-4 w-4 text-indigo-500" />
@@ -131,61 +131,61 @@ export default function ConfigPage() {
         <CardContent className="px-4 pb-4 space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs text-slate-500">Questões iniciais/dia</Label>
+              <Label className="text-xs text-slate-500 dark:text-slate-400">Questões iniciais/dia</Label>
               <Input
                 type="number"
                 inputMode="numeric"
                 value={initialQuestions}
                 onChange={(e) => setInitialQuestions(e.target.value)}
-                className="border-slate-200"
+                className="border-slate-200 dark:border-slate-700"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-slate-500">Meta final/dia</Label>
+              <Label className="text-xs text-slate-500 dark:text-slate-400">Meta final/dia</Label>
               <Input
                 type="number"
                 inputMode="numeric"
                 value={targetQuestions}
                 onChange={(e) => setTargetQuestions(e.target.value)}
-                className="border-slate-200"
+                className="border-slate-200 dark:border-slate-700"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-slate-500">Incremento semanal (%)</Label>
+              <Label className="text-xs text-slate-500 dark:text-slate-400">Incremento semanal (%)</Label>
               <Input
                 type="number"
                 inputMode="decimal"
                 value={weeklyIncrement}
                 onChange={(e) => setWeeklyIncrement(e.target.value)}
-                className="border-slate-200"
+                className="border-slate-200 dark:border-slate-700"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-slate-500">Accuracy mínima (%)</Label>
+              <Label className="text-xs text-slate-500 dark:text-slate-400">Accuracy mínima (%)</Label>
               <Input
                 type="number"
                 inputMode="numeric"
                 value={minAccuracy}
                 onChange={(e) => setMinAccuracy(e.target.value)}
-                className="border-slate-200"
+                className="border-slate-200 dark:border-slate-700"
               />
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs text-slate-500">Limite diário de questões</Label>
+            <Label className="text-xs text-slate-500 dark:text-slate-400">Limite diário de questões</Label>
             <Input
               type="number"
               inputMode="numeric"
               value={dailyLimit}
               onChange={(e) => setDailyLimit(e.target.value)}
-              className="border-slate-200"
+              className="border-slate-200 dark:border-slate-700"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Notifications */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm dark:bg-slate-900">
         <CardHeader className="pb-2 px-4 pt-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <Bell className="h-4 w-4 text-indigo-500" />
@@ -194,19 +194,19 @@ export default function ConfigPage() {
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-3">
           <div className="space-y-1.5">
-            <Label className="text-xs text-slate-500">Horário do lembrete</Label>
+            <Label className="text-xs text-slate-500 dark:text-slate-400">Horário do lembrete</Label>
             <Input
               type="time"
               value={notificationTime}
               onChange={(e) => setNotificationTime(e.target.value)}
-              className="border-slate-200"
+              className="border-slate-200 dark:border-slate-700"
             />
           </div>
         </CardContent>
       </Card>
 
       {/* Target Exams */}
-      <Card className="border-0 shadow-sm">
+      <Card className="border-0 shadow-sm dark:bg-slate-900">
         <CardHeader className="pb-2 px-4 pt-4">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <BookOpen className="h-4 w-4 text-indigo-500" />
@@ -215,10 +215,10 @@ export default function ConfigPage() {
         </CardHeader>
         <CardContent className="px-4 pb-4 space-y-2">
           {exams.map((exam) => (
-            <div key={exam.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50">
+            <div key={exam.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800">
               <div>
                 <p className="text-sm font-medium">{exam.name}</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {format(new Date(exam.exam_date), "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
                 </p>
               </div>

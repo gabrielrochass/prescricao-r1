@@ -9,18 +9,19 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle2, BookOpen } from "lucide-react"
+import { CheckCircle2, BookOpen, FileText, GraduationCap, Layers, Target, TrendingUp } from "lucide-react"
 import type { Subject } from "@/lib/types"
 import { getSubjectsTree, createStudyEntry } from "@/lib/queries"
 import { cn } from "@/lib/utils"
+import type { LucideIcon } from "lucide-react"
 
 type StudyType = "questions" | "theory" | "flashcards" | "simulado"
 
-const studyTypes: { value: StudyType; label: string; emoji: string }[] = [
-  { value: "questions", label: "Questões", emoji: "📝" },
-  { value: "theory", label: "Teoria", emoji: "📖" },
-  { value: "flashcards", label: "Flashcards", emoji: "🃏" },
-  { value: "simulado", label: "Simulado", emoji: "🎯" },
+const studyTypes: { value: StudyType; label: string; icon: LucideIcon }[] = [
+  { value: "questions", label: "Questões", icon: FileText },
+  { value: "theory", label: "Teoria", icon: GraduationCap },
+  { value: "flashcards", label: "Flashcards", icon: Layers },
+  { value: "simulado", label: "Simulado", icon: Target },
 ]
 
 export default function RegistrarPage() {
@@ -89,7 +90,7 @@ export default function RegistrarPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-slate-400">Carregando...</div>
+        <div className="animate-pulse text-slate-400 dark:text-slate-500">Carregando...</div>
       </div>
     )
   }
@@ -97,16 +98,18 @@ export default function RegistrarPage() {
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-4 px-4">
-        <div className="h-20 w-20 rounded-full bg-emerald-100 flex items-center justify-center">
-          <CheckCircle2 className="h-10 w-10 text-emerald-500" />
+        <div className="h-20 w-20 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center">
+          <CheckCircle2 className="h-10 w-10 text-emerald-500 dark:text-emerald-400" />
         </div>
-        <h2 className="text-xl font-bold text-slate-900">Registrado!</h2>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Registrado!</h2>
         {accuracy !== null && (
-          <p className="text-slate-500">
-            Accuracy: <span className={cn("font-bold", accuracy >= 70 ? "text-emerald-600" : "text-amber-600")}>{accuracy}%</span>
+          <p className="text-slate-500 dark:text-slate-400">
+            Accuracy: <span className={cn("font-bold", accuracy >= 70 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400")}>{accuracy}%</span>
           </p>
         )}
-        <p className="text-sm text-slate-400">Continue assim 💪</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+          Continue assim <TrendingUp className="h-4 w-4" />
+        </p>
       </div>
     )
   }
@@ -114,8 +117,8 @@ export default function RegistrarPage() {
   return (
     <div className="px-4 pt-6 space-y-4">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Registrar Estudo</h1>
-        <p className="text-sm text-slate-500 mt-0.5">O que você estudou hoje?</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Registrar Estudo</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">O que você estudou hoje?</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -129,11 +132,11 @@ export default function RegistrarPage() {
               className={cn(
                 "flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all",
                 studyType === type.value
-                  ? "border-indigo-500 bg-indigo-50"
-                  : "border-slate-200 bg-white hover:border-slate-300"
+                  ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950"
+                  : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-slate-300"
               )}
             >
-              <span className="text-lg">{type.emoji}</span>
+              <type.icon className={cn("h-5 w-5", studyType === type.value ? "text-indigo-600 dark:text-indigo-300" : "text-slate-400 dark:text-slate-500")} />
               <span className="text-[10px] font-medium">{type.label}</span>
             </button>
           ))}
@@ -142,7 +145,7 @@ export default function RegistrarPage() {
         {/* Subject Selection */}
         <Card className="border-0 shadow-sm">
           <CardHeader className="pb-2 px-4 pt-4">
-            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
               <BookOpen className="h-4 w-4" />
               Tema
             </CardTitle>
@@ -162,15 +165,15 @@ export default function RegistrarPage() {
                   className={cn(
                     "w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                     selectedSubject === parent.id
-                      ? "bg-indigo-50 text-indigo-700"
-                      : "hover:bg-slate-50"
+                      ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
+                      : "hover:bg-slate-50 dark:hover:bg-slate-800"
                   )}
                 >
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: parent.color }} />
                     {parent.name}
                     {parent.children?.length ? (
-                      <span className="text-xs text-slate-400 ml-auto">
+                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">
                         {expandedParent === parent.id ? "▼" : "▶"}
                       </span>
                     ) : null}
@@ -192,8 +195,8 @@ export default function RegistrarPage() {
                       className={cn(
                         "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
                         selectedSubject === child.id
-                          ? "bg-indigo-50 text-indigo-700 font-medium"
-                          : "text-slate-600 hover:bg-slate-50"
+                          ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-medium"
+                          : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
                       )}
                     >
                       {child.name}
@@ -208,8 +211,8 @@ export default function RegistrarPage() {
                         className={cn(
                           "w-full text-left px-3 py-1.5 ml-4 rounded-lg text-xs transition-colors",
                           selectedSubject === topic.id
-                            ? "bg-indigo-50 text-indigo-700 font-medium"
-                            : "text-slate-500 hover:bg-slate-50"
+                            ? "bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-medium"
+                            : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
                         )}
                       >
                         {topic.name}
@@ -226,25 +229,25 @@ export default function RegistrarPage() {
         {studyType === "questions" && (
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-xs text-slate-500">Questões feitas</Label>
+              <Label className="text-xs text-slate-500 dark:text-slate-400">Questões feitas</Label>
               <Input
                 type="number"
                 inputMode="numeric"
                 placeholder="30"
                 value={totalQuestions}
                 onChange={(e) => setTotalQuestions(e.target.value)}
-                className="h-12 text-lg text-center border-slate-200"
+                className="h-12 text-lg text-center border-slate-200 dark:border-slate-700"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs text-slate-500">Acertos</Label>
+              <Label className="text-xs text-slate-500 dark:text-slate-400">Acertos</Label>
               <Input
                 type="number"
                 inputMode="numeric"
                 placeholder="22"
                 value={correctQuestions}
                 onChange={(e) => setCorrectQuestions(e.target.value)}
-                className="h-12 text-lg text-center border-slate-200"
+                className="h-12 text-lg text-center border-slate-200 dark:border-slate-700"
               />
             </div>
             {accuracy !== null && (
@@ -252,7 +255,7 @@ export default function RegistrarPage() {
                 <Badge
                   className={cn(
                     "text-sm px-4 py-1",
-                    accuracy >= 70 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                    accuracy >= 70 ? "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300" : "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300"
                   )}
                 >
                   Accuracy: {accuracy}%
@@ -264,12 +267,12 @@ export default function RegistrarPage() {
 
         {/* Notes */}
         <div className="space-y-1.5">
-          <Label className="text-xs text-slate-500">Notas (opcional)</Label>
+          <Label className="text-xs text-slate-500 dark:text-slate-400">Notas (opcional)</Label>
           <Textarea
             placeholder="Algo que queira lembrar..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="border-slate-200 resize-none"
+            className="border-slate-200 dark:border-slate-700 resize-none"
             rows={2}
           />
         </div>

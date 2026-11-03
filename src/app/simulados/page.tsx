@@ -18,8 +18,10 @@ export default function SimuladosPage() {
   const [mocks, setMocks] = useState<MockExam[]>([])
   const [exams, setExams] = useState<TargetExam[]>([])
   const [loading, setLoading] = useState(true)
+  const [today, setToday] = useState<Date | null>(null)
 
   useEffect(() => {
+    setToday(new Date())
     async function load() {
       try {
         const [m, e] = await Promise.all([getMockExams(), getTargetExams()])
@@ -34,15 +36,13 @@ export default function SimuladosPage() {
     load()
   }, [])
 
-  if (loading) {
+  if (loading || !today) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-slate-400">Carregando...</div>
+        <div className="animate-pulse text-slate-400 dark:text-slate-500">Carregando...</div>
       </div>
     )
   }
-
-  const [today] = useState(() => new Date())
   const upcoming = mocks.filter(m => m.status === "scheduled" && new Date(m.scheduled_date) >= today)
   const completed = mocks.filter(m => m.status === "done")
   const trend = analyzeSimuladoTrend(completed)
@@ -54,44 +54,44 @@ export default function SimuladosPage() {
 
   return (
     <div className="px-4 pt-6 space-y-4">
-      <h1 className="text-2xl font-bold text-slate-900">Simulados</h1>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Simulados</h1>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm dark:bg-slate-900">
           <CardContent className="p-3 text-center">
-            <p className="text-2xl font-bold text-indigo-600">{completed.length}</p>
-            <p className="text-[10px] text-slate-500">Realizados</p>
+            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{completed.length}</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400">Realizados</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm dark:bg-slate-900">
           <CardContent className="p-3 text-center">
-            <p className="text-2xl font-bold text-slate-900">{trend.averageAccuracy}%</p>
-            <p className="text-[10px] text-slate-500">Média</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{trend.averageAccuracy}%</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400">Média</p>
           </CardContent>
         </Card>
-        <Card className="border-0 shadow-sm">
+        <Card className="border-0 shadow-sm dark:bg-slate-900">
           <CardContent className="p-3 text-center">
             <p className={cn(
               "text-2xl font-bold",
-              trend.trend === "improving" ? "text-emerald-600" :
-              trend.trend === "declining" ? "text-red-600" : "text-slate-400"
+              trend.trend === "improving" ? "text-emerald-600 dark:text-emerald-400" :
+              trend.trend === "declining" ? "text-red-600 dark:text-red-400" : "text-slate-400 dark:text-slate-500"
             )}>
               {trend.trend === "improving" ? "↑" : trend.trend === "declining" ? "↓" : "—"}
             </p>
-            <p className="text-[10px] text-slate-500">Tendência</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400">Tendência</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Frequency recommendation */}
       {primaryExam && (
-        <Card className="border-0 shadow-sm bg-violet-50">
+        <Card className="border-0 shadow-sm bg-violet-50 dark:bg-violet-950">
           <CardContent className="p-3 text-center">
-            <p className="text-xs text-violet-600 font-medium">
+            <p className="text-xs text-violet-600 dark:text-violet-400 font-medium">
               Frequência recomendada: {getSimuladoFrequency(monthsUntilExam)}
             </p>
-            <p className="text-[10px] text-violet-400 mt-0.5">
+            <p className="text-[10px] text-violet-400 dark:text-violet-300 mt-0.5">
               {differenceInDays(new Date(primaryExam.exam_date), today)} dias até {primaryExam.name}
             </p>
           </CardContent>
@@ -106,23 +106,23 @@ export default function SimuladosPage() {
 
         <TabsContent value="upcoming" className="space-y-2 mt-3">
           {upcoming.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-8">
+            <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">
               Nenhum simulado agendado
             </p>
           ) : (
             upcoming.map((mock) => (
-              <Card key={mock.id} className="border-0 shadow-sm">
+              <Card key={mock.id} className="border-0 shadow-sm dark:bg-slate-900">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-violet-100 flex items-center justify-center">
-                        <Calendar className="h-5 w-5 text-violet-600" />
+                      <div className="h-10 w-10 rounded-xl bg-violet-100 dark:bg-violet-900 flex items-center justify-center">
+                        <Calendar className="h-5 w-5 text-violet-600 dark:text-violet-400" />
                       </div>
                       <div>
                         <p className="text-sm font-semibold">
                           {format(new Date(mock.scheduled_date), "d 'de' MMMM", { locale: ptBR })}
                         </p>
-                        <p className="text-xs text-slate-500">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
                           {mock.source ?? mock.exam_type}
                           {mock.total_questions && ` · ${mock.total_questions}q`}
                         </p>
@@ -141,7 +141,7 @@ export default function SimuladosPage() {
 
         <TabsContent value="completed" className="space-y-2 mt-3">
           {completed.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-8">
+            <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">
               Nenhum simulado realizado ainda
             </p>
           ) : (
@@ -152,14 +152,14 @@ export default function SimuladosPage() {
                   ? Math.round((mock.correct_questions / mock.total_questions) * 100)
                   : null
                 return (
-                  <Card key={mock.id} className="border-0 shadow-sm">
+                  <Card key={mock.id} className="border-0 shadow-sm dark:bg-slate-900">
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-semibold">
                             {format(new Date(mock.scheduled_date), "d 'de' MMMM", { locale: ptBR })}
                           </p>
-                          <p className="text-xs text-slate-500">
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
                             {mock.source ?? mock.exam_type}
                             {mock.total_questions && ` · ${mock.correct_questions}/${mock.total_questions}`}
                             {mock.duration_minutes && ` · ${mock.duration_minutes}min`}
@@ -168,8 +168,8 @@ export default function SimuladosPage() {
                         {acc !== null && (
                           <span className={cn(
                             "text-lg font-bold",
-                            acc >= 70 ? "text-emerald-600" :
-                            acc >= 50 ? "text-amber-600" : "text-red-600"
+                            acc >= 70 ? "text-emerald-600 dark:text-emerald-400" :
+                            acc >= 50 ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"
                           )}>
                             {acc}%
                           </span>
