@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { BottomNav } from "@/components/bottom-nav"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -6,7 +7,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 pb-20 max-w-lg mx-auto w-full">
         {children}
       </main>
-      <BottomNav />
+      <Suspense>
+        <BottomNav />
+      </Suspense>
     </>
   )
 }

@@ -11,6 +11,7 @@ import { getCompletedSimulados } from "@/lib/db/simulados"
 import { getSubjectCount } from "@/lib/db/subjects"
 import { getAgendaStats } from "@/lib/db/agenda"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 const BIG_AREAS: BigArea[] = ["Clínica Médica", "Cirurgia", "Pediatria", "Ginecologia e Obstetrícia", "Medicina Preventiva"]
 const AREA_SHORT: Record<BigArea, string> = {
@@ -115,32 +116,34 @@ export default function MetricasPage() {
       </Card>
 
       {/* Simulado donut */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4 flex items-center gap-5">
-          <DonutChart
-            value={latestPct}
-            size={90}
-            strokeWidth={8}
-            color="var(--color-mr1-pink)"
-            label={latestSim ? `${latestPct}%` : "—"}
-            sublabel={latestSim ? "último" : "sem dados"}
-          />
-          <div>
-            <p className="font-display text-xl text-[var(--color-mr1-text)]">Simulados</p>
-            <p className="text-sm text-[var(--color-mr1-text2)]">{simulados.length} realizados</p>
-            {simulados.length >= 2 && (
-              <div className="flex items-center gap-1 mt-1">
-                {trend === "improving" && <TrendingUp className="h-3.5 w-3.5 text-green-600" />}
-                {trend === "declining" && <TrendingDown className="h-3.5 w-3.5 text-red-600" />}
-                {trend === "stable" && <Minus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />}
-                <span className="text-xs text-[var(--color-mr1-text2)]">
-                  {trend === "improving" ? "Melhorando" : trend === "declining" ? "Piorando" : "Estável"}
-                </span>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <Link href="/simulado">
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+          <CardContent className="p-4 flex items-center gap-5">
+            <DonutChart
+              value={latestPct}
+              size={90}
+              strokeWidth={8}
+              color="var(--color-mr1-pink)"
+              label={latestSim ? `${latestPct}%` : "\u2014"}
+              sublabel={latestSim ? "\u00faltimo" : "sem dados"}
+            />
+            <div>
+              <p className="font-display text-xl text-[var(--color-mr1-text)]">Simulados</p>
+              <p className="text-sm text-[var(--color-mr1-text2)]">{simulados.length} realizados</p>
+              {simulados.length >= 2 && (
+                <div className="flex items-center gap-1 mt-1">
+                  {trend === "improving" && <TrendingUp className="h-3.5 w-3.5 text-green-600" />}
+                  {trend === "declining" && <TrendingDown className="h-3.5 w-3.5 text-red-600" />}
+                  {trend === "stable" && <Minus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />}
+                  <span className="text-xs text-[var(--color-mr1-text2)]">
+                    {trend === "improving" ? "Melhorando" : trend === "declining" ? "Piorando" : "Est\u00e1vel"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </Link>
 
       {/* Accuracy by area — 5 small donuts */}
       {latestSim && (

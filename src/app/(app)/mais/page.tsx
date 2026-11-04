@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Bell, User, FileDown, BookOpen, Scale, ChevronRight, CheckCircle2 } from "lucide-react"
+import Link from "next/link"
+import { Bell, User, FileDown, BookOpen, Scale, ChevronRight, CheckCircle2, Clock } from "lucide-react"
 import type { User as UserType, Exam } from "@/lib/types"
 import { getUser, updateUser } from "@/lib/db/users"
 import { getExams } from "@/lib/db/exams"
@@ -147,21 +148,41 @@ export default function MaisPage() {
         </CardContent>
       </Card>
 
-      {/* Review rules link */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Scale className="h-4 w-4 text-[var(--color-mr1-action)]" />
-              <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Regras de revisão</span>
+      {/* Rotations link */}
+      <Link href="/mais/rotacoes">
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-[var(--color-mr1-action)]" />
+                <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Rodízios</span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-[var(--color-mr1-text2)]" />
             </div>
-            <ChevronRight className="h-4 w-4 text-[var(--color-mr1-text2)]" />
-          </div>
-          <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
-            Escada de revisão, faixas de acerto, simulados, reta final
-          </p>
-        </CardContent>
-      </Card>
+            <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
+              Gerenciar rodízios, horas e dias de tema novo
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
+
+      {/* Review rules link */}
+      <Link href="/mais/regras">
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Scale className="h-4 w-4 text-[var(--color-mr1-action)]" />
+                <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Regras de revisão</span>
+              </div>
+              <ChevronRight className="h-4 w-4 text-[var(--color-mr1-text2)]" />
+            </div>
+            <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
+              Escada de revisão, faixas de acerto, simulados, reta final
+            </p>
+          </CardContent>
+        </Card>
+      </Link>
 
       {/* Export */}
       <Card className="border-0 shadow-sm">

@@ -172,6 +172,12 @@ export default function HojePage() {
                 +{overdueItems.length - 5} itens
               </p>
             )}
+            <Link
+              href="/recuperacao"
+              className="block text-center text-xs font-semibold text-[var(--color-mr1-action)] mt-2 touch-target"
+            >
+              Ver todos e reagendar
+            </Link>
           </CardContent>
         </Card>
       )}
