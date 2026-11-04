@@ -1,24 +1,11 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 
-let _supabase: SupabaseClient | null = null
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ''
 
-export function getSupabase(): SupabaseClient {
-  if (_supabase) return _supabase
+// Single shared client for v1 (no auth, single user)
+// Will migrate to @supabase/ssr with auth for multi-user
+export const supabase = createClient(url, key)
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!url || !key) {
-    throw new Error('Missing Supabase environment variables')
-  }
-
-  _supabase = createClient(url, key)
-  return _supabase
-}
-
-// For backward compat — lazy getter
-export const supabase = new Proxy({} as SupabaseClient, {
-  get(_, prop) {
-    return (getSupabase() as any)[prop]
-  },
-})
+// Default user ID for v1 (seeded in migration)
+export const DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000001'

@@ -1,36 +1,42 @@
 import type { Metadata, Viewport } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Instrument_Serif } from "next/font/google"
 import "./globals.css"
-import { BottomNav } from "@/components/bottom-nav"
-import { ThemeProvider } from "@/components/theme-provider"
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 })
 
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+})
+
 export const metadata: Metadata = {
-  title: "Prescrição R1",
-  description: "Organização de estudo para residência médica",
+  title: "MR1",
+  description: "Cronograma de estudo para residência médica",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "MR1",
+  },
 }
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#0f172a",
+  themeColor: "#C23B6C",
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-[family-name:var(--font-inter)] transition-colors">
-        <ThemeProvider>
-          <main className="flex-1 pb-20 max-w-lg mx-auto w-full">
-            {children}
-          </main>
-          <BottomNav />
-        </ThemeProvider>
+    <html lang="pt-BR" className={`${inter.variable} ${instrumentSerif.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col font-[family-name:var(--font-inter)]">
+        {children}
       </body>
     </html>
   )

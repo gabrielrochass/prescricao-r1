@@ -2,27 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
+  --font-heading: var(--font-heading);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -39,82 +24,59 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* MR1 semantic colors */
+  --color-mr1-bg: #FCF8F9;
+  --color-mr1-card: #FFFFFF;
+  --color-mr1-text: #4A2B3F;
+  --color-mr1-text2: #7C6673;
+  --color-mr1-lines: #F1E4E9;
+  --color-mr1-action: #C23B6C;
+  --color-mr1-orange-bg: #FFF0E6;
+  --color-mr1-orange-tag: #FFC9A6;
+  --color-mr1-orange: #E06A1B;
+  --color-mr1-pink-bg: #FFEEF3;
+  --color-mr1-pink-tag: #FFC2D6;
+  --color-mr1-pink: #D94E7F;
+  --color-mr1-butter: #FFF6D6;
 }
+
+/* MR1 Design System — PRD "Visual e acessibilidade"
+   Fundo rosado, texto ameixa, ação framboesa
+   Sem preto, sem marrom, sem degradê */
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #FCF8F9;
+  --foreground: #4A2B3F;
+  --card: #FFFFFF;
+  --card-foreground: #4A2B3F;
+  --popover: #FFFFFF;
+  --popover-foreground: #4A2B3F;
+  --primary: #C23B6C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #FFEEF3;
+  --secondary-foreground: #4A2B3F;
+  --muted: #F1E4E9;
+  --muted-foreground: #7C6673;
+  --accent: #FFF0E6;
+  --accent-foreground: #4A2B3F;
+  --destructive: #C23B6C;
+  --border: #F1E4E9;
+  --input: #F1E4E9;
+  --ring: #C23B6C;
+  --chart-1: #E06A1B;
+  --chart-2: #D94E7F;
+  --chart-3: #C23B6C;
+  --radius: 0.75rem;
+  --font-heading: 'Instrument Serif', Georgia, serif;
 }
 
 @layer base {
@@ -127,4 +89,27 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Utility classes for MR1 typography */
+.font-display {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+}
+
+/* Agenda item type colors */
+.agenda-study { background-color: #FFF0E6; color: #E06A1B; }
+.agenda-fixation { background-color: #FFF0E6; color: #E06A1B; }
+.agenda-review { background-color: #FFEEF3; color: #D94E7F; }
+.agenda-simulado { background-color: #FFEEF3; color: #D94E7F; }
+.agenda-guaranteed { background-color: #FFEEF3; color: #D94E7F; }
+.agenda-late { background-color: #FFF6D6; color: #4A2B3F; }
+
+/* Day over limit */
+.day-over-limit { background-color: #FFF6D6; }
+
+/* Touch targets — WCAG 2.2 AA min 44px */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
 }
