@@ -43,9 +43,9 @@ function ListRow({
       <span className={`text-[15px] ${danger ? "text-[#C23B6C]" : "text-[#4A2B3F]"}`}>
         {label}
       </span>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0 ml-4">
         {rightText && (
-          <span className="text-[13px] text-[#7C6673]">{rightText}</span>
+          <span className="text-[13px] text-[#7C6673] truncate max-w-[140px]">{rightText}</span>
         )}
         {rightElement}
         {showChevron && (
@@ -90,10 +90,6 @@ export default function MaisPage() {
     )
   }
 
-  const examSummary = exams.length > 0
-    ? exams.map(e => `${e.name} ${format(new Date(e.exam_date), "dd/MM/yy", { locale: ptBR })}`).join(", ")
-    : "Nenhuma prova"
-
   const notificationTimes = user
     ? `${user.notification_morning}, ${user.notification_evening}`
     : ""
@@ -104,32 +100,26 @@ export default function MaisPage() {
         <h1 className="font-display text-3xl text-[#4A2B3F]">Mais</h1>
       </div>
 
-      {/* PLANO */}
       <SectionHeader>Plano</SectionHeader>
       <div className="bg-white">
-        <ListRow href="/mais/rotacoes" label="Rod\u00edzios e capacidade" />
-        <ListRow href="/mais/regras" label="Regras de revis\u00e3o" />
-        <ListRow href="/adicionar" label="Grade do Eu M\u00e9dico Residente" />
+        <ListRow href="/mais/rotacoes" label="Rodízios e capacidade" />
+        <ListRow href="/mais/regras" label="Regras de revisão" />
+        <ListRow href="/adicionar" label="Grade do Eu Médico Residente" />
         <ListRow
-          href={undefined}
           label="Provas e datas"
-          rightText={examSummary}
           isLast
         />
       </div>
 
-      {/* APP */}
       <SectionHeader>App</SectionHeader>
       <div className="bg-white">
         <ListRow
-          href={undefined}
-          label="Notifica\u00e7\u00f5es"
+          label="Notificações"
           rightText={notificationTimes}
           isLast
         />
       </div>
 
-      {/* CONTA E DADOS */}
       <SectionHeader>Conta e dados</SectionHeader>
       <div className="bg-white">
         <ListRow
@@ -141,8 +131,8 @@ export default function MaisPage() {
           }
           showChevron={false}
         />
-        <ListRow href={undefined} label="Exportar backup (planilha)" />
-        <ListRow href={undefined} label="Importar backup" />
+        <ListRow label="Exportar backup (planilha)" />
+        <ListRow label="Importar backup" />
         <ListRow
           label="Sair da conta"
           showChevron={false}
@@ -151,9 +141,8 @@ export default function MaisPage() {
         />
       </div>
 
-      {/* Footer note */}
       <p className="px-6 pt-6 text-center text-[12px] leading-relaxed text-[#7C6673]">
-        Tudo \u00e9 salvo na nuvem automaticamente. Ao entrar em outro aparelho, seu plano e seu hist\u00f3rico aparecem do jeito que voc\u00ea deixou.
+        Tudo é salvo na nuvem automaticamente. Ao entrar em outro aparelho, seu plano e seu histórico aparecem do jeito que você deixou.
       </p>
     </div>
   )

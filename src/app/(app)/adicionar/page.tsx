@@ -171,22 +171,53 @@ export default function AdicionarPage() {
 
   const projectedReviews = selectedLesson ? getProjectedReviews() : []
 
+  const essentialCount = lessons.filter(l => l.category === "essential").length
+  const importantCount = lessons.filter(l => l.category === "important").length
+  const complementaryCount = lessons.filter(l => l.category === "complementary").length
+  const studiedCount = studiedIds.length
+  const progressPct = lessons.length > 0 ? Math.round((studiedCount / lessons.length) * 100) : 0
+
   // ─── STEP 1: Estudo ───
   if (step === 1 && !selectedLesson) {
     return (
-      <div className="min-h-screen bg-[#FCF8F9]">
+      <div className="min-h-screen bg-[#FCF8F9] flex flex-col">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <span className="text-[15px] text-[#7C6673]">Cancelar</span>
+          <Link href="/hoje" className="text-[15px] text-[#7C6673]">Cancelar</Link>
           <span className="font-display text-xl text-[#4A2B3F]">Adicionar estudo</span>
           <span className="text-[13px] text-[#7C6673]">1 de 3</span>
         </div>
 
-        <div className="px-4 space-y-3">
-          <div className="flex items-center justify-between py-2">
+        <div className="px-4 space-y-3 flex-1 flex flex-col">
+          {/* Date */}
+          <div className="flex items-center justify-between py-2 border-b border-[#F1E4E9]">
             <span className="text-[13px] text-[#7C6673]">Data do estudo</span>
             <span className="text-[15px] text-[#4A2B3F]">{format(today, "dd/MM/yyyy")}</span>
           </div>
 
+          {/* EMR info + progress */}
+          <div className="p-3 rounded-xl bg-white border border-[#F1E4E9]">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <p className="text-[13px] font-medium text-[#4A2B3F]">Grade do Eu Médico Residente</p>
+                <p className="text-[11px] text-[#7C6673]">Extensivo 2025 R1 Bônus</p>
+              </div>
+              <span className="text-[13px] font-semibold text-[#C23B6C]">{progressPct}%</span>
+            </div>
+            {/* Progress bar */}
+            <div className="h-1.5 rounded-full bg-[#F1E4E9] overflow-hidden">
+              <div className="h-full rounded-full bg-[#E06A1B] transition-all" style={{ width: `${progressPct}%` }} />
+            </div>
+            <div className="flex items-center justify-between mt-2 text-[10px] text-[#7C6673]">
+              <span>{studiedCount} de {lessons.length} aulas estudadas</span>
+              <div className="flex gap-2">
+                <span className="px-1.5 py-0.5 rounded bg-red-50 text-red-700">{essentialCount} essenciais</span>
+                <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-700">{importantCount} importantes</span>
+                <span className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">{complementaryCount} compl.</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#7C6673]" />
             <Input
@@ -197,30 +228,56 @@ export default function AdicionarPage() {
             />
           </div>
 
-          <div className="space-y-0.5 max-h-[55vh] overflow-y-auto rounded-xl bg-white">
+          <p className="text-[10px] text-[#7C6673]">
+            A lista segue a ordem de prioridade do EMR para ENAMED e SES-PE. Essenciais primeiro, depois Importantes, depois Complementares.
+          </p>
+
+          {/* Lesson list — fills remaining space */}
+          <div className="flex-1 overflow-y-auto rounded-xl bg-white -mx-0.5 min-h-0">
             {filteredLessons.map((lesson, i) => {
               const isStudied = studiedIds.includes(lesson.id)
+              const catLabel = lesson.category === "essential" ? "Essencial" : lesson.category === "important" ? "Importante" : "Complementar"
+              const catColor = lesson.category === "essential" ? "text-red-600" : lesson.category === "important" ? "text-amber-600" : "text-blue-600"
               return (
                 <button
                   key={lesson.id}
                   onClick={() => !isStudied && setSelectedLesson(lesson)}
                   disabled={isStudied}
                   className={cn(
-                    "w-full text-left px-4 py-3 touch-target flex items-center justify-between",
+                    "w-full text-left px-4 py-3 touch-target flex items-center gap-3",
                     i < filteredLessons.length - 1 && "border-b border-[#F1E4E9]",
                     isStudied && "opacity-40"
                   )}
                 >
-                  <div className="flex items-center gap-3 flex-1 min-w-0">
-                    <span className="text-[11px] text-[#7C6673] w-5 text-right shrink-0">{lesson.sort_order}</span>
-                    <div className="min-w-0">
-                      <p className={cn("text-[15px] truncate", isStudied ? "line-through text-[#7C6673]" : "text-[#4A2B3F]")}>
-                        {lesson.name}
-                      </p>
-                      <p className="text-[11px] text-[#7C6673]">{lesson.big_area}, {lesson.category === "essential" ? "Essencial" : lesson.category === "important" ? "Importante" : "Complementar"}</p>
+                  <span className="text-[11px] text-[#7C6673] w-5 text-right shrink-0 tabular-nums">{lesson.sort_order}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className={cn("text-[14px] leading-tight", isStudied ? "line-through text-[#7C6673]" : "text-[#4A2B3F]")}>
+                      {lesson.name}
+                    </p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className="text-[10px] text-[#7C6673]">{lesson.big_area}</span>
+                      <span className="text-[10px] text-[#7C6673]">·</span>
+                      <span className={cn("text-[10px] font-medium", catColor)}>{catLabel}</span>
+                      {lesson.mandatory_duration_min > 0 && (
+                        <>
+                          <span className="text-[10px] text-[#7C6673]">·</span>
+                          <span className="text-[10px] text-[#7C6673]">{Math.round(lesson.mandatory_duration_min / 60 * 10) / 10}h</span>
+                        </>
+                      )}
                     </div>
                   </div>
-                  <span className="text-[11px] text-[#7C6673] shrink-0 ml-2">{INCIDENCE_LABELS[categoryToIncidence(lesson.category)]}</span>
+                  <div className="shrink-0 flex items-center gap-1.5">
+                    {isStudied ? (
+                      <CheckCircle2 className="h-4 w-4 text-[#C23B6C]" />
+                    ) : (
+                      <span className={cn(
+                        "text-[10px] px-1.5 py-0.5 rounded-full font-medium",
+                        incidence === "high" ? "bg-red-50 text-red-600" : incidence === "medium" ? "bg-amber-50 text-amber-600" : "bg-blue-50 text-blue-600"
+                      )}>
+                        {INCIDENCE_LABELS[categoryToIncidence(lesson.category)]}
+                      </span>
+                    )}
+                  </div>
                 </button>
               )
             })}
