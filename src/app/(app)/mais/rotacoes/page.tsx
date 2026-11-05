@@ -124,7 +124,7 @@ export default function RotacoesPage() {
                   ))}
                 </div>
               </div>
-              <button onClick={() => handleDelete(rotation.id)} className="p-2 hover:bg-red-50 rounded-lg touch-target">
+              <button onClick={() => handleDelete(rotation.id)} className="p-2 hover:bg-red-50 rounded-lg touch-target active:bg-red-100">
                 <Trash2 className="h-4 w-4 text-[var(--color-mr1-text2)]" />
               </button>
             </div>
@@ -171,7 +171,7 @@ export default function RotacoesPage() {
                     key={i}
                     onClick={() => toggleDay(i)}
                     className={cn(
-                      "flex-1 py-2 rounded-lg text-xs font-medium transition-all touch-target",
+                      "flex-1 py-2 rounded-lg text-xs font-medium transition-all touch-target active:scale-95",
                       topicDays.includes(i)
                         ? "bg-[var(--color-mr1-action)] text-white"
                         : "bg-[var(--color-mr1-lines)] text-[var(--color-mr1-text2)]"
@@ -191,7 +191,7 @@ export default function RotacoesPage() {
                 Cancelar
               </Button>
               <Button onClick={handleCreate} disabled={saving || !name.trim()} className="flex-1 bg-[var(--color-mr1-action)] text-white">
-                {saving ? "Salvando..." : "Criar"}
+                {saving ? <><span className="mr1-spinner" /> Salvando...</> : "Criar"}
               </Button>
             </div>
           </CardContent>

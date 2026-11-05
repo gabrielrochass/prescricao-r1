@@ -260,7 +260,7 @@ export default function SimuladoPage() {
           disabled={saving}
           className="w-full h-12 text-base font-semibold bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
         >
-          {saving ? "Salvando..." : "Salvar resultado"}
+          {saving ? <><span className="mr1-spinner" /> Salvando...</> : "Salvar resultado"}
         </Button>
       </div>
     )
@@ -303,7 +303,7 @@ export default function SimuladoPage() {
                 </div>
                 <Button
                   onClick={() => setSelectedSimulado(sim)}
-                  className="h-10 px-4 text-sm font-semibold bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
+                  className="h-10 px-4 text-sm font-semibold bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white active:scale-95"
                 >
                   <ClipboardList className="h-4 w-4 mr-1.5" />
                   Registrar

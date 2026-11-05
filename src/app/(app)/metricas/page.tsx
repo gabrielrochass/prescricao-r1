@@ -38,7 +38,7 @@ const TOTAL_AULAS = 112
 function InfoButton() {
   return (
     <button
-      className="flex items-center justify-center w-5 h-5 rounded-full border border-[var(--color-mr1-text2)] opacity-40 hover:opacity-70 transition-opacity"
+      className="flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full border border-[var(--color-mr1-text2)] opacity-40 hover:opacity-70 transition-opacity touch-target"
       aria-label="Informações"
     >
       <Info className="h-3 w-3 text-[var(--color-mr1-text2)]" />
@@ -156,7 +156,7 @@ export default function MetricasPage() {
         <h1 className="font-display text-3xl text-[var(--color-mr1-text)]">Métricas</h1>
         <Link
           href="/simulado"
-          className="px-4 py-2 text-sm font-medium rounded-full border border-[var(--color-mr1-action)] text-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-pink-bg)] transition-colors"
+          className="px-4 py-2 text-sm font-medium rounded-full border border-[var(--color-mr1-action)] text-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-pink-bg)] transition-colors active:scale-95"
         >
           Novo simulado
         </Link>

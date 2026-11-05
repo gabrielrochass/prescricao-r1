@@ -320,7 +320,7 @@ export default function RevisaoCheckPage() {
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={() => handleDecrement(setFeitas)}
-                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95 active:bg-[#F1E4E9]"
               >
                 <Minus className="h-4 w-4 text-[var(--color-mr1-text2)]" />
               </button>
@@ -329,7 +329,7 @@ export default function RevisaoCheckPage() {
               </span>
               <button
                 onClick={() => handleIncrement(setFeitas)}
-                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95 active:bg-[#F1E4E9]"
               >
                 <Plus className="h-4 w-4 text-[var(--color-mr1-text2)]" />
               </button>
@@ -345,7 +345,7 @@ export default function RevisaoCheckPage() {
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={() => handleDecrement(setAcertos)}
-                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95 active:bg-[#F1E4E9]"
               >
                 <Minus className="h-4 w-4 text-[var(--color-mr1-text2)]" />
               </button>
@@ -354,7 +354,7 @@ export default function RevisaoCheckPage() {
               </span>
               <button
                 onClick={() => handleIncrement(setAcertos, feitas)}
-                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                className="h-11 w-11 rounded-full bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95 active:bg-[#F1E4E9]"
               >
                 <Plus className="h-4 w-4 text-[var(--color-mr1-text2)]" />
               </button>
@@ -446,7 +446,7 @@ export default function RevisaoCheckPage() {
         className="w-full bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
         size="lg"
       >
-        {saving ? "Salvando..." : "Concluir"}
+        {saving ? <><span className="mr1-spinner" /> Salvando...</> : "Concluir"}
       </Button>
     </div>
   )

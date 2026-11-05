@@ -26,7 +26,7 @@ export function BottomNav() {
               key={href}
               href={href}
               className={cn(
-                "flex flex-col items-center gap-0.5 py-1 transition-colors touch-target",
+                "flex flex-col items-center gap-0.5 py-1 transition-colors touch-target active:opacity-70",
                 active
                   ? "text-[#C23B6C]"
                   : accent ? "text-[#C23B6C]" : "text-[#7C6673]"

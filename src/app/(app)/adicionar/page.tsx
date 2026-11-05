@@ -182,7 +182,7 @@ export default function AdicionarPage() {
     return (
       <div className="min-h-screen bg-[#FCF8F9] flex flex-col">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <Link href="/hoje" className="text-[15px] text-[#7C6673]">Cancelar</Link>
+          <Link href="/hoje" className="text-[15px] text-[#7C6673] active:opacity-70">Cancelar</Link>
           <span className="font-display text-xl text-[#4A2B3F]">Adicionar estudo</span>
           <span className="text-[13px] text-[#7C6673]">1 de 3</span>
         </div>
@@ -244,7 +244,7 @@ export default function AdicionarPage() {
                   onClick={() => !isStudied && setSelectedLesson(lesson)}
                   disabled={isStudied}
                   className={cn(
-                    "w-full text-left px-4 py-3 touch-target flex items-center gap-3",
+                    "w-full text-left px-4 py-3 touch-target flex items-center gap-3 active:bg-[#F1E4E9]",
                     i < filteredLessons.length - 1 && "border-b border-[#F1E4E9]",
                     isStudied && "opacity-40"
                   )}
@@ -291,7 +291,7 @@ export default function AdicionarPage() {
     return (
       <div className="min-h-screen bg-[#FCF8F9]">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <button onClick={handleCancel} className="text-[15px] text-[#7C6673]">Cancelar</button>
+          <button onClick={handleCancel} className="text-[15px] text-[#7C6673] active:opacity-70">Cancelar</button>
           <span className="font-display text-xl text-[#4A2B3F]">Adicionar estudo</span>
           <span className="text-[13px] text-[#7C6673]">1 de 3</span>
         </div>
@@ -323,7 +323,7 @@ export default function AdicionarPage() {
                   key={e}
                   onClick={() => setEffort(e)}
                   className={cn(
-                    "flex-1 py-3 rounded-xl text-[15px] font-medium transition-all touch-target",
+                    "flex-1 py-3 rounded-xl text-[15px] font-medium transition-all touch-target active:scale-95",
                     effort === e
                       ? "bg-[#C23B6C] text-white"
                       : "bg-white border border-[#F1E4E9] text-[#4A2B3F]"
@@ -352,7 +352,7 @@ export default function AdicionarPage() {
           </div>
 
           <Button onClick={handleSaveStudy} disabled={saving} className="w-full h-12 bg-[#C23B6C] text-white text-[15px] font-semibold rounded-xl">
-            {saving ? "Salvando..." : "Salvar estudo"}
+            {saving ? <><span className="mr1-spinner" /> Salvando...</> : "Salvar estudo"}
           </Button>
         </div>
       </div>
@@ -364,7 +364,7 @@ export default function AdicionarPage() {
     return (
       <div className="min-h-screen bg-[#FCF8F9]">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <button onClick={handleCancel} className="text-[15px] text-[#7C6673]">Cancelar</button>
+          <button onClick={handleCancel} className="text-[15px] text-[#7C6673] active:opacity-70">Cancelar</button>
           <span className="font-display text-xl text-[#4A2B3F]">Fixação</span>
           <span className="text-[13px] text-[#7C6673]">2 de 3</span>
         </div>
@@ -385,9 +385,9 @@ export default function AdicionarPage() {
           {!fixationDone ? (
             <>
               <Button onClick={handleSaveFixation} disabled={saving} className="w-full h-12 bg-[#C23B6C] text-white text-[15px] font-semibold rounded-xl">
-                {saving ? "Salvando..." : "Concluir fixação"}
+                {saving ? <><span className="mr1-spinner" /> Salvando...</> : "Concluir fixação"}
               </Button>
-              <button onClick={() => setFixationDone(true)} className="w-full text-center text-[13px] text-[#7C6673] py-2">
+              <button onClick={() => setFixationDone(true)} className="w-full text-center text-[13px] text-[#7C6673] py-2 hover:text-[#C23B6C] active:opacity-70">
                 Já fiz, registrar agora
               </button>
             </>
@@ -404,9 +404,9 @@ export default function AdicionarPage() {
                 </div>
               </div>
               <Button onClick={handleSaveFixation} disabled={saving} className="w-full h-12 bg-[#C23B6C] text-white text-[15px] font-semibold rounded-xl">
-                {saving ? "Salvando..." : "Concluir fixação"}
+                {saving ? <><span className="mr1-spinner" /> Salvando...</> : "Concluir fixação"}
               </Button>
-              <button onClick={() => setFixationDone(false)} className="w-full text-center text-[13px] text-[#7C6673] py-2">
+              <button onClick={() => setFixationDone(false)} className="w-full text-center text-[13px] text-[#7C6673] py-2 hover:text-[#C23B6C] active:opacity-70">
                 Voltar e editar
               </button>
             </>
@@ -425,7 +425,7 @@ export default function AdicionarPage() {
     return (
       <div className="min-h-screen bg-[#FCF8F9]">
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <button onClick={handleCancel} className="text-[15px] text-[#7C6673]">Cancelar</button>
+          <button onClick={handleCancel} className="text-[15px] text-[#7C6673] active:opacity-70">Cancelar</button>
           <span className="font-display text-xl text-[#4A2B3F]">Revisões</span>
           <span className="text-[13px] text-[#7C6673]">3 de 3</span>
         </div>
@@ -509,7 +509,7 @@ export default function AdicionarPage() {
               Ver no calendário
             </Button>
           </Link>
-          <button onClick={handleCancel} className="w-full text-center text-[13px] text-[#7C6673] py-2 pb-6">
+          <button onClick={handleCancel} className="w-full text-center text-[13px] text-[#7C6673] py-2 pb-6 hover:text-[#C23B6C] active:opacity-70">
             Adicionar outro estudo
           </button>
         </div>

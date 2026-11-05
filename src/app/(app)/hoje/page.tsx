@@ -256,7 +256,7 @@ export default function HojePage() {
                         }
                   }
                   disabled={isDone}
-                  className="flex-shrink-0 touch-target flex items-center justify-center"
+                  className="flex-shrink-0 touch-target flex items-center justify-center cursor-pointer active:bg-[#F1E4E9] rounded-full"
                 >
                   {isDone ? (
                     <div className="w-6 h-6 rounded-full border-2 border-[var(--color-mr1-action)] flex items-center justify-center">
@@ -294,7 +294,7 @@ export default function HojePage() {
 
             if (link) {
               return (
-                <Link key={item.id} href={link} className="block">
+                <Link key={item.id} href={link} className="block list-row-interactive rounded-2xl">
                   {row}
                 </Link>
               )
@@ -307,7 +307,7 @@ export default function HojePage() {
 
       {/* ─── 5. Recuperacao card ─── */}
       {overdueItems.length > 0 && (
-        <Link href="/recuperacao" className="block">
+        <Link href="/recuperacao" className="block list-row-interactive rounded-2xl">
           <Card className="border-0 shadow-sm bg-[#FFF6D6] rounded-2xl">
             <CardContent className="p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#FFE9A0] flex items-center justify-center flex-shrink-0">

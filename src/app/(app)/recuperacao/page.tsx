@@ -230,7 +230,7 @@ export default function RecuperacaoPage() {
           disabled={!targetDate || rescheduling}
           className="w-full h-12 text-base font-semibold bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
         >
-          {rescheduling ? "Reagendando..." : "Reagendar"}
+          {rescheduling ? <><span className="mr1-spinner" /> Reagendando...</> : "Reagendar"}
         </Button>
       </div>
     )
@@ -281,7 +281,7 @@ export default function RecuperacaoPage() {
                     key={item.id}
                     onClick={() => toggleItem(item.id)}
                     className={cn(
-                      "w-full flex items-center gap-3 p-3 rounded-xl transition-colors touch-target text-left",
+                      "w-full flex items-center gap-3 p-3 rounded-xl transition-colors touch-target text-left active:bg-[#F1E4E9]",
                       isSelected ? "bg-[var(--color-mr1-action)]/10" : "bg-white"
                     )}
                   >

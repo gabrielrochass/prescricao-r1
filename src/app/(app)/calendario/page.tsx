@@ -254,7 +254,7 @@ export default function CalendarioPage() {
               key={v}
               onClick={() => setView(v)}
               className={cn(
-                "flex-1 py-1.5 text-sm font-medium rounded-full transition-colors",
+                "flex-1 py-1.5 text-sm font-medium rounded-full transition-colors active:opacity-80",
                 active
                   ? "bg-[#C23B6C] text-white"
                   : "text-[#7C6673]"

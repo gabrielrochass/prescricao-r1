@@ -250,7 +250,7 @@ export default function OnboardingPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setWeekdayHours(prev => Math.max(0, prev - 0.5))}
-                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95"
                     >
                       <Minus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />
                     </button>
@@ -259,7 +259,7 @@ export default function OnboardingPage() {
                     </span>
                     <button
                       onClick={() => setWeekdayHours(prev => Math.min(8, prev + 0.5))}
-                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95"
                     >
                       <Plus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />
                     </button>
@@ -270,7 +270,7 @@ export default function OnboardingPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setWeekendHours(prev => Math.max(0, prev - 0.5))}
-                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95"
                     >
                       <Minus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />
                     </button>
@@ -279,7 +279,7 @@ export default function OnboardingPage() {
                     </span>
                     <button
                       onClick={() => setWeekendHours(prev => Math.min(12, prev + 0.5))}
-                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                      className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95"
                     >
                       <Plus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />
                     </button>
@@ -293,7 +293,7 @@ export default function OnboardingPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setShiftsPerWeek(prev => Math.max(0, prev - 1))}
-                    className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                    className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95"
                   >
                     <Minus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />
                   </button>
@@ -302,7 +302,7 @@ export default function OnboardingPage() {
                   </span>
                   <button
                     onClick={() => setShiftsPerWeek(prev => Math.min(7, prev + 1))}
-                    className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target"
+                    className="h-9 w-9 rounded-lg bg-[var(--color-mr1-lines)] flex items-center justify-center touch-target active:scale-95"
                   >
                     <Plus className="h-3.5 w-3.5 text-[var(--color-mr1-text2)]" />
                   </button>
@@ -320,7 +320,7 @@ export default function OnboardingPage() {
                       key={i}
                       onClick={() => toggleTopicDay(i)}
                       className={cn(
-                        "flex-1 py-2.5 rounded-xl text-xs font-medium transition-all touch-target",
+                        "flex-1 py-2.5 rounded-xl text-xs font-medium transition-all touch-target active:scale-95",
                         newTopicDays.includes(i)
                           ? "bg-[var(--color-mr1-action)] text-white"
                           : "bg-[var(--color-mr1-lines)] text-[var(--color-mr1-text2)]"
@@ -514,7 +514,7 @@ export default function OnboardingPage() {
           {step === 0 ? (
             <Button
               onClick={() => handleNextFromStep(0)}
-              className="w-full bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
+              className="w-full bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white active:scale-95"
               size="lg"
             >
               Comecar
@@ -524,10 +524,10 @@ export default function OnboardingPage() {
             <Button
               onClick={() => handleNextFromStep(step)}
               disabled={finishing}
-              className="w-full bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
+              className="w-full bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white active:scale-95"
               size="lg"
             >
-              {finishing ? "Preparando..." : "Ir para o plano"}
+              {finishing ? <><span className="mr1-spinner" /> Preparando...</> : "Ir para o plano"}
               {!finishing && <ArrowRight className="h-4 w-4 ml-1" />}
             </Button>
           ) : (
@@ -535,7 +535,7 @@ export default function OnboardingPage() {
               <Button
                 variant="outline"
                 onClick={() => setStep(prev => Math.max(0, prev - 1))}
-                className="border-[var(--color-mr1-lines)] text-[var(--color-mr1-text2)]"
+                className="border-[var(--color-mr1-lines)] text-[var(--color-mr1-text2)] active:scale-95"
                 size="lg"
               >
                 <ArrowLeft className="h-4 w-4" />
@@ -543,10 +543,10 @@ export default function OnboardingPage() {
               <Button
                 onClick={() => handleNextFromStep(step)}
                 disabled={savingRotation}
-                className="flex-1 bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
+                className="flex-1 bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white active:scale-95"
                 size="lg"
               >
-                {savingRotation ? "Salvando..." : step === 2 ? (rotationName.trim() ? "Salvar e continuar" : "Pular") : "Continuar"}
+                {savingRotation ? <><span className="mr1-spinner" /> Salvando...</> : step === 2 ? (rotationName.trim() ? "Salvar e continuar" : "Pular") : "Continuar"}
                 {!savingRotation && <ArrowRight className="h-4 w-4 ml-1" />}
               </Button>
             </div>

@@ -6,8 +6,6 @@ import { ChevronRight } from "lucide-react"
 import type { User, Exam } from "@/lib/types"
 import { getUser } from "@/lib/db/users"
 import { getExams } from "@/lib/db/exams"
-import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
@@ -22,9 +20,10 @@ function ListRow({
   label,
   rightText,
   rightElement,
-  showChevron = true,
+  showChevron,
   isLast = false,
   danger = false,
+  onClick,
 }: {
   href?: string
   label: string
@@ -33,12 +32,18 @@ function ListRow({
   showChevron?: boolean
   isLast?: boolean
   danger?: boolean
+  onClick?: () => void
 }) {
+  const isInteractive = !!(href || onClick)
+  const chevronVisible = showChevron ?? isInteractive
+
   const content = (
     <div
       className={`flex items-center justify-between px-4 min-h-[44px] bg-white ${
         !isLast ? "border-b border-[#F1E4E9]" : ""
-      }`}
+      } ${isInteractive ? "list-row-interactive" : "list-row-static"}`}
+      onClick={!href ? onClick : undefined}
+      role={onClick && !href ? "button" : undefined}
     >
       <span className={`text-[15px] ${danger ? "text-[#C23B6C]" : "text-[#4A2B3F]"}`}>
         {label}
@@ -48,7 +53,7 @@ function ListRow({
           <span className="text-[13px] text-[#7C6673] truncate max-w-[140px]">{rightText}</span>
         )}
         {rightElement}
-        {showChevron && (
+        {chevronVisible && (
           <ChevronRight className="h-4 w-4 text-[#7C6673] opacity-50" />
         )}
       </div>
@@ -105,19 +110,12 @@ export default function MaisPage() {
         <ListRow href="/mais/rotacoes" label="Rodízios e capacidade" />
         <ListRow href="/mais/regras" label="Regras de revisão" />
         <ListRow href="/adicionar" label="Grade do Eu Médico Residente" />
-        <ListRow
-          label="Provas e datas"
-          isLast
-        />
+        <ListRow label="Provas e datas" isLast />
       </div>
 
       <SectionHeader>App</SectionHeader>
       <div className="bg-white">
-        <ListRow
-          label="Notificações"
-          rightText={notificationTimes}
-          isLast
-        />
+        <ListRow label="Notificações" rightText={notificationTimes} isLast />
       </div>
 
       <SectionHeader>Conta e dados</SectionHeader>
@@ -129,13 +127,11 @@ export default function MaisPage() {
               <span className="text-green-600">&#10003;</span> Sincronizado
             </span>
           }
-          showChevron={false}
         />
         <ListRow label="Exportar backup (planilha)" />
         <ListRow label="Importar backup" />
         <ListRow
           label="Sair da conta"
-          showChevron={false}
           danger
           isLast
         />
