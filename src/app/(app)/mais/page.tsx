@@ -1,29 +1,71 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { Bell, User, FileDown, BookOpen, Scale, ChevronRight, CheckCircle2, Clock } from "lucide-react"
-import type { User as UserType, Exam } from "@/lib/types"
-import { getUser, updateUser } from "@/lib/db/users"
+import { ChevronRight } from "lucide-react"
+import type { User, Exam } from "@/lib/types"
+import { getUser } from "@/lib/db/users"
 import { getExams } from "@/lib/db/exams"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { cn } from "@/lib/utils"
+
+function SectionHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-[11px] font-semibold uppercase tracking-wider text-[#7C6673] pt-6 pb-2 px-4">
+      {children}
+    </h2>
+  )
+}
+
+function ListRow({
+  href,
+  label,
+  rightText,
+  rightElement,
+  showChevron = true,
+  isLast = false,
+  danger = false,
+}: {
+  href?: string
+  label: string
+  rightText?: string
+  rightElement?: React.ReactNode
+  showChevron?: boolean
+  isLast?: boolean
+  danger?: boolean
+}) {
+  const content = (
+    <div
+      className={`flex items-center justify-between px-4 min-h-[44px] bg-white ${
+        !isLast ? "border-b border-[#F1E4E9]" : ""
+      }`}
+    >
+      <span className={`text-[15px] ${danger ? "text-[#C23B6C]" : "text-[#4A2B3F]"}`}>
+        {label}
+      </span>
+      <div className="flex items-center gap-2">
+        {rightText && (
+          <span className="text-[13px] text-[#7C6673]">{rightText}</span>
+        )}
+        {rightElement}
+        {showChevron && (
+          <ChevronRight className="h-4 w-4 text-[#7C6673] opacity-50" />
+        )}
+      </div>
+    </div>
+  )
+
+  if (href) {
+    return <Link href={href}>{content}</Link>
+  }
+
+  return content
+}
 
 export default function MaisPage() {
-  const [user, setUser] = useState<UserType | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [exams, setExams] = useState<Exam[]>([])
   const [loading, setLoading] = useState(true)
-  const [saved, setSaved] = useState(false)
-
-  const [displayName, setDisplayName] = useState("")
-  const [morningTime, setMorningTime] = useState("")
-  const [eveningTime, setEveningTime] = useState("")
 
   useEffect(() => {
     async function load() {
@@ -31,11 +73,8 @@ export default function MaisPage() {
         const [u, e] = await Promise.all([getUser(), getExams()])
         setUser(u)
         setExams(e)
-        setDisplayName(u.display_name)
-        setMorningTime(u.notification_morning)
-        setEveningTime(u.notification_evening)
-      } catch (e) {
-        console.error(e)
+      } catch (err) {
+        console.error(err)
       } finally {
         setLoading(false)
       }
@@ -43,169 +82,79 @@ export default function MaisPage() {
     load()
   }, [])
 
-  async function handleSave() {
-    try {
-      await updateUser({
-        display_name: displayName,
-        notification_morning: morningTime,
-        notification_evening: eveningTime,
-      })
-      setSaved(true)
-      setTimeout(() => setSaved(false), 2000)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-pulse text-[var(--color-mr1-text2)]">Carregando...</div>
+      <div className="flex items-center justify-center h-screen bg-[#FCF8F9]">
+        <div className="animate-pulse text-[#7C6673]">Carregando...</div>
       </div>
     )
   }
 
+  const examSummary = exams.length > 0
+    ? exams.map(e => `${e.name} ${format(new Date(e.exam_date), "dd/MM/yy", { locale: ptBR })}`).join(", ")
+    : "Nenhuma prova"
+
+  const notificationTimes = user
+    ? `${user.notification_morning}, ${user.notification_evening}`
+    : ""
+
   return (
-    <div className="px-4 pt-6 space-y-4 pb-8">
-      <h1 className="font-display text-3xl text-[var(--color-mr1-text)]">Mais</h1>
+    <div className="min-h-screen bg-[#FCF8F9] pb-8">
+      <div className="px-4 pt-6 pb-2">
+        <h1 className="font-display text-3xl text-[#4A2B3F]">Mais</h1>
+      </div>
 
-      {/* Profile */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-[var(--color-mr1-pink-bg)] flex items-center justify-center">
-              <User className="h-5 w-5 text-[var(--color-mr1-action)]" />
-            </div>
-            <div className="flex-1">
-              <Label className="text-xs text-[var(--color-mr1-text2)]">Nome</Label>
-              <Input
-                value={displayName}
-                onChange={e => setDisplayName(e.target.value)}
-                className="border-[var(--color-mr1-lines)] mt-1"
-              />
-            </div>
-          </div>
-          <div>
-            <p className="text-xs text-[var(--color-mr1-text2)]">Especialidade</p>
-            <p className="text-sm font-medium text-[var(--color-mr1-text)]">{user?.specialty}</p>
-          </div>
-        </CardContent>
-      </Card>
+      {/* PLANO */}
+      <SectionHeader>Plano</SectionHeader>
+      <div className="bg-white">
+        <ListRow href="/mais/rotacoes" label="Rod\u00edzios e capacidade" />
+        <ListRow href="/mais/regras" label="Regras de revis\u00e3o" />
+        <ListRow href="/adicionar" label="Grade do Eu M\u00e9dico Residente" />
+        <ListRow
+          href={undefined}
+          label="Provas e datas"
+          rightText={examSummary}
+          isLast
+        />
+      </div>
 
-      {/* Notifications */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <Bell className="h-4 w-4 text-[var(--color-mr1-action)]" />
-            <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Notificações</span>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <Label className="text-xs text-[var(--color-mr1-text2)]">Manhã</Label>
-              <Input
-                type="time"
-                value={morningTime}
-                onChange={e => setMorningTime(e.target.value)}
-                className="border-[var(--color-mr1-lines)]"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label className="text-xs text-[var(--color-mr1-text2)]">Noite</Label>
-              <Input
-                type="time"
-                value={eveningTime}
-                onChange={e => setEveningTime(e.target.value)}
-                className="border-[var(--color-mr1-lines)]"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* APP */}
+      <SectionHeader>App</SectionHeader>
+      <div className="bg-white">
+        <ListRow
+          href={undefined}
+          label="Notifica\u00e7\u00f5es"
+          rightText={notificationTimes}
+          isLast
+        />
+      </div>
 
-      {/* Exams */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4 space-y-3">
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-4 w-4 text-[var(--color-mr1-action)]" />
-            <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Provas-alvo</span>
-          </div>
-          {exams.map(exam => (
-            <div key={exam.id} className="flex items-center justify-between p-3 rounded-xl bg-[var(--color-mr1-bg)]">
-              <div>
-                <p className="text-sm font-medium text-[var(--color-mr1-text)]">{exam.name}</p>
-                <p className="text-xs text-[var(--color-mr1-text2)]">
-                  {format(new Date(exam.exam_date), "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                  {exam.estimated && " (estimada)"}
-                </p>
-              </div>
-              {exam.reference_cutoff && (
-                <Badge variant="outline" className="text-[10px] border-[var(--color-mr1-lines)]">
-                  Corte: {exam.reference_cutoff}
-                </Badge>
-              )}
-            </div>
-          ))}
-        </CardContent>
-      </Card>
+      {/* CONTA E DADOS */}
+      <SectionHeader>Conta e dados</SectionHeader>
+      <div className="bg-white">
+        <ListRow
+          label={user?.email || ""}
+          rightElement={
+            <span className="text-[13px] text-[#7C6673] flex items-center gap-1">
+              <span className="text-green-600">&#10003;</span> Sincronizado
+            </span>
+          }
+          showChevron={false}
+        />
+        <ListRow href={undefined} label="Exportar backup (planilha)" />
+        <ListRow href={undefined} label="Importar backup" />
+        <ListRow
+          label="Sair da conta"
+          showChevron={false}
+          danger
+          isLast
+        />
+      </div>
 
-      {/* Rotations link */}
-      <Link href="/mais/rotacoes">
-        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-[var(--color-mr1-action)]" />
-                <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Rodízios</span>
-              </div>
-              <ChevronRight className="h-4 w-4 text-[var(--color-mr1-text2)]" />
-            </div>
-            <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
-              Gerenciar rodízios, horas e dias de tema novo
-            </p>
-          </CardContent>
-        </Card>
-      </Link>
-
-      {/* Review rules link */}
-      <Link href="/mais/regras">
-        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Scale className="h-4 w-4 text-[var(--color-mr1-action)]" />
-                <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Regras de revisão</span>
-              </div>
-              <ChevronRight className="h-4 w-4 text-[var(--color-mr1-text2)]" />
-            </div>
-            <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
-              Escada de revisão, faixas de acerto, simulados, reta final
-            </p>
-          </CardContent>
-        </Card>
-      </Link>
-
-      {/* Export */}
-      <Card className="border-0 shadow-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center gap-2">
-            <FileDown className="h-4 w-4 text-[var(--color-mr1-action)]" />
-            <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Exportar backup</span>
-          </div>
-          <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
-            Exporta estudos, revisões e simulados em planilha
-          </p>
-        </CardContent>
-      </Card>
-
-      {/* Save button */}
-      <Button
-        onClick={handleSave}
-        className="w-full h-12 text-base font-semibold bg-[var(--color-mr1-action)] hover:bg-[var(--color-mr1-action)]/90 text-white"
-      >
-        {saved ? (
-          <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4" /> Salvo</span>
-        ) : "Salvar"}
-      </Button>
+      {/* Footer note */}
+      <p className="px-6 pt-6 text-center text-[12px] leading-relaxed text-[#7C6673]">
+        Tudo \u00e9 salvo na nuvem automaticamente. Ao entrar em outro aparelho, seu plano e seu hist\u00f3rico aparecem do jeito que voc\u00ea deixou.
+      </p>
     </div>
   )
 }

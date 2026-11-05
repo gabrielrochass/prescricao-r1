@@ -8,6 +8,8 @@ interface DonutChartProps {
   bgColor?: string
   label?: string
   sublabel?: string
+  labelClassName?: string
+  sublabelClassName?: string
 }
 
 export function DonutChart({
@@ -18,6 +20,8 @@ export function DonutChart({
   bgColor = "var(--color-mr1-lines)",
   label,
   sublabel,
+  labelClassName,
+  sublabelClassName,
 }: DonutChartProps) {
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
@@ -51,10 +55,10 @@ export function DonutChart({
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         {label && (
-          <span className="font-display text-2xl text-[var(--color-mr1-text)]">{label}</span>
+          <span className={labelClassName ?? "font-display text-2xl text-[var(--color-mr1-text)]"}>{label}</span>
         )}
         {sublabel && (
-          <span className="text-[10px] text-[var(--color-mr1-text2)]">{sublabel}</span>
+          <span className={sublabelClassName ?? "text-[10px] text-[var(--color-mr1-text2)]"}>{sublabel}</span>
         )}
       </div>
     </div>
