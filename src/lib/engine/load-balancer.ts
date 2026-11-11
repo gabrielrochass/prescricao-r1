@@ -10,7 +10,19 @@ import type { AgendaItem, DailyLoad } from '../types'
  * Weekly: 12h cap warning.
  */
 
-// ─── Daily Question Limit ───
+// ─── Daily Question Minimum (constant daily goal) ───
+
+/**
+ * Minimum questions per day, even when no fixation/review is scheduled.
+ * Based on EMR/Medcurso/PDR methodology: start at 25, progress +3/month.
+ * Ensures user always has a daily practice target.
+ */
+export function getDailyMinimum(startDate: string): number {
+  const months = differenceInMonths(new Date(), new Date(startDate))
+  return Math.min(80, 25 + months * 3)
+}
+
+// ─── Daily Question Limit (max cap) ───
 
 export function getDailyLimit(startDate: string, initialLimit: number = 30): number {
   const months = differenceInMonths(new Date(), new Date(startDate))

@@ -116,6 +116,7 @@ export default function CalendarioPage() {
   const [items, setItems] = useState<AgendaItem[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<ViewMode>("month")
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
   // Init date in useEffect to avoid Next.js 16 SSR issues
   useEffect(() => {
@@ -318,12 +319,17 @@ export default function CalendarioPage() {
                   const totalQ = dayItems.reduce((s, it) => s + (it.planned_questions ?? 0), 0)
                   const overLimit = totalQ > DAILY_QUESTION_LIMIT
 
+                  const isSelected = selectedDate === dateStr
+
                   return (
-                    <div
+                    <button
                       key={dateStr}
+                      onClick={() => setSelectedDate(dateStr)}
                       className={cn(
-                        "min-h-[52px] rounded-lg p-[2px] flex flex-col items-center",
-                        overLimit && "bg-[var(--color-mr1-butter)]"
+                        "min-h-[52px] rounded-lg p-[2px] flex flex-col items-center cursor-pointer active:bg-[#F1E4E9] transition-colors",
+                        overLimit && "bg-[var(--color-mr1-butter)]",
+                        isSelected && !overLimit && "bg-[var(--color-mr1-pink-bg)]",
+                        isSelected && "ring-2 ring-[#C23B6C]"
                       )}
                     >
                       {/* Day number */}
@@ -332,7 +338,9 @@ export default function CalendarioPage() {
                           "w-6 h-6 flex items-center justify-center rounded-full text-[11px] font-semibold mb-[2px]",
                           today
                             ? "bg-[#C23B6C] text-white"
-                            : "text-[var(--color-mr1-text)]"
+                            : isSelected
+                              ? "text-[#C23B6C]"
+                              : "text-[var(--color-mr1-text)]"
                         )}
                       >
                         {day.getDate()}
@@ -365,7 +373,7 @@ export default function CalendarioPage() {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </button>
                   )
                 })}
               </div>
@@ -390,6 +398,9 @@ export default function CalendarioPage() {
               <p className="text-[10px] text-[var(--color-mr1-text2)] text-center mt-2 leading-snug">
                 Tracejado é previsto e cinza é feito. Fundo amarelo marca dia acima do limite.
               </p>
+
+              {/* Selected date items */}
+              <SelectedDateItems selectedDate={selectedDate} itemsByDate={itemsByDate} />
             </div>
           )}
 
@@ -404,12 +415,16 @@ export default function CalendarioPage() {
                 const doneQ = dayItems.reduce((s, it) => s + (it.done_questions ?? 0), 0)
                 const dow = getDay(day)
 
+                const isSelected = selectedDate === dateStr
+
                 return (
-                  <div
+                  <button
                     key={dateStr}
+                    onClick={() => setSelectedDate(dateStr)}
                     className={cn(
-                      "rounded-xl bg-white p-3",
-                      today && "ring-2 ring-[#C23B6C]"
+                      "rounded-xl bg-white p-3 w-full text-left cursor-pointer active:bg-[#F1E4E9] transition-colors",
+                      today && "ring-2 ring-[#C23B6C]",
+                      isSelected && !today && "ring-2 ring-[#C23B6C] bg-[var(--color-mr1-pink-bg)]"
                     )}
                   >
                     {/* Day header row */}
@@ -462,13 +477,16 @@ export default function CalendarioPage() {
                         })}
                       </div>
                     )}
-                  </div>
+                  </button>
                 )
               })}
 
               <p className="text-[10px] text-[var(--color-mr1-text2)] text-center mt-2 leading-snug">
-                Toque num estudo previsto para trocar de dia. A fixação vai junto.
+                Toque num dia para ver os itens.
               </p>
+
+              {/* Selected date items */}
+              <SelectedDateItems selectedDate={selectedDate} itemsByDate={itemsByDate} />
             </div>
           )}
 
@@ -637,6 +655,123 @@ export default function CalendarioPage() {
           })()}
         </>
       )}
+    </div>
+  )
+}
+
+// ─── Selected Date Items Panel ───
+
+function SelectedDateItems({
+  selectedDate,
+  itemsByDate,
+}: {
+  selectedDate: string | null
+  itemsByDate: Map<string, AgendaItem[]>
+}) {
+  if (!selectedDate) {
+    return (
+      <div className="mt-4 py-6 text-center">
+        <p className="text-xs text-[var(--color-mr1-text2)]">Toque em um dia para ver os itens</p>
+      </div>
+    )
+  }
+
+  const dayItems = itemsByDate.get(selectedDate) ?? []
+  const dateParts = selectedDate.split("-")
+  const dateLabel = `${dateParts[2]}/${dateParts[1]}`
+
+  const studies = dayItems.filter(i => i.type === "study" || i.type === "fixation")
+  const reviews = dayItems.filter(i => i.type === "review" || i.type === "guaranteed_review")
+  const simulados = dayItems.filter(i => i.type === "simulado")
+
+  return (
+    <div className="mt-4 space-y-3">
+      {/* Header */}
+      <div className="bg-[#C23B6C] text-white rounded-xl px-4 py-2.5 text-sm font-medium">
+        {dayItems.length} {dayItems.length === 1 ? "item" : "itens"} em {dateLabel}
+      </div>
+
+      {dayItems.length === 0 ? (
+        <div className="rounded-xl bg-white p-5 text-center">
+          <p className="text-sm text-[var(--color-mr1-text2)]">Nenhum item neste dia</p>
+        </div>
+      ) : (
+        <>
+          {studies.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-mr1-text2)] mb-1.5">
+                Estudos e fixação
+              </p>
+              <div className="space-y-1.5">
+                {studies.map(item => (
+                  <SelectedItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {reviews.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-mr1-text2)] mb-1.5">
+                Revisões
+              </p>
+              <div className="space-y-1.5">
+                {reviews.map(item => (
+                  <SelectedItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {simulados.length > 0 && (
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-mr1-text2)] mb-1.5">
+                Simulados
+              </p>
+              <div className="space-y-1.5">
+                {simulados.map(item => (
+                  <SelectedItemCard key={item.id} item={item} />
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
+function SelectedItemCard({ item }: { item: AgendaItem }) {
+  const isDone = item.status === "done"
+  const name = item.type === "simulado" ? "Simulado" : (item.subject?.grade_lesson?.name ?? "Sem nome")
+  const area = item.subject?.grade_lesson?.big_area ?? ""
+  const cat = item.subject?.grade_lesson?.category
+  const catLabel = cat === "essential" ? "Essencial" : cat === "important" ? "Importante" : cat === "complementary" ? "Complementar" : ""
+  const inc = item.subject?.incidence
+  const incLabel = inc === "high" ? "alta" : inc === "medium" ? "média" : inc === "low" ? "baixa" : ""
+
+  return (
+    <div className={cn(
+      "rounded-xl bg-white p-3 flex items-center gap-3",
+      isDone && "opacity-60"
+    )}>
+      <AgendaBadge type={item.type} reviewNumber={item.review_number} />
+      <div className="flex-1 min-w-0">
+        <p className={cn(
+          "text-[13px] font-medium truncate",
+          isDone ? "line-through text-[var(--color-mr1-text2)]" : "text-[var(--color-mr1-text)]"
+        )}>
+          {name}
+        </p>
+        {area && (
+          <p className="text-[10px] text-[var(--color-mr1-text2)]">
+            {area}{catLabel ? `, ${catLabel}` : ""}{incLabel ? `, incidência ${incLabel}` : ""}
+          </p>
+        )}
+      </div>
+      <span className="text-[10px] text-[var(--color-mr1-text2)] shrink-0">
+        {item.type === "study" ? "aula" : `${item.planned_questions ?? 0}q`}
+      </span>
     </div>
   )
 }

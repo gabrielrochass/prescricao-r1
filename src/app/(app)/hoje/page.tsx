@@ -17,7 +17,7 @@ import {
 } from "@/lib/db/agenda"
 import { getExams } from "@/lib/db/exams"
 import { getUser } from "@/lib/db/users"
-import { getDailyLimit } from "@/lib/engine/load-balancer"
+import { getDailyLimit, getDailyMinimum } from "@/lib/engine/load-balancer"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
@@ -100,19 +100,20 @@ export default function HojePage() {
 
   // ─── Derived data ───
 
-  const dailyLimit = getDailyLimit(
-    user?.created_at ?? format(today, "yyyy-MM-dd"),
-    user?.daily_limit_initial ?? 30,
-  )
+  const userStart = user?.created_at ?? format(today, "yyyy-MM-dd")
+  const dailyMinimum = getDailyMinimum(userStart)
+  const dailyLimit = getDailyLimit(userStart, user?.daily_limit_initial ?? 30)
 
   // Question progress: count only question-based items (fixation + review)
   const questionItems = todayItems.filter((i) => isQuestionType(i.type))
-  const totalQuestions = questionItems.reduce((s, i) => s + (i.planned_questions ?? 0), 0)
+  const scheduledQuestions = questionItems.reduce((s, i) => s + (i.planned_questions ?? 0), 0)
+  const dailyTarget = Math.max(dailyMinimum, scheduledQuestions)
+  const freeQuestions = dailyTarget - scheduledQuestions // gap filled by "questoes livres"
   const doneQuestions = questionItems
     .filter((i) => i.status === "done")
     .reduce((s, i) => s + (i.done_questions ?? i.planned_questions ?? 0), 0)
-  const remainingQuestions = totalQuestions - doneQuestions
-  const progressPct = totalQuestions > 0 ? Math.round((doneQuestions / totalQuestions) * 100) : 0
+  const remainingQuestions = dailyTarget - doneQuestions
+  const progressPct = dailyTarget > 0 ? Math.round((doneQuestions / dailyTarget) * 100) : 0
 
   // Breakdown by type
   const fixationItems = todayItems.filter((i) => i.type === "fixation")
@@ -162,8 +163,8 @@ export default function HojePage() {
               strokeWidth={8}
               color="var(--color-mr1-orange)"
               bgColor="var(--color-mr1-lines)"
-              label={`${doneQuestions}`}
-              sublabel={`de ${totalQuestions}`}
+              label={`${progressPct}%`}
+              sublabel={`${doneQuestions} de ${dailyTarget}`}
             />
             <div className="flex-1 space-y-1">
               <div className="flex items-center gap-1.5">
@@ -173,7 +174,7 @@ export default function HojePage() {
                 <Info className="h-3.5 w-3.5 text-[var(--color-mr1-text2)] opacity-60" />
               </div>
               <p className="text-sm font-semibold text-[var(--color-mr1-text)]">
-                {doneQuestions} de {totalQuestions} questoes
+                {doneQuestions} de {dailyTarget} questões
               </p>
               {remainingQuestions > 0 && (
                 <p className="text-sm font-medium text-[var(--color-mr1-action)]">
@@ -196,9 +197,18 @@ export default function HojePage() {
             <div className="flex items-center gap-2.5">
               <AgendaBadge type="review" className="text-[10px] px-1 py-0 min-w-[20px]" />
               <span className="text-sm text-[var(--color-mr1-text)]">
-                {reviewDone} de {reviewTotal} em revisao
+                {reviewDone} de {reviewTotal} em revisão
               </span>
             </div>
+            {/* Free questions line — fills gap to daily minimum */}
+            {freeQuestions > 0 && (
+              <div className="flex items-center gap-2.5">
+                <span className="inline-flex items-center justify-center rounded-md px-1 py-0 text-[10px] font-semibold min-w-[20px] bg-[var(--color-mr1-lines)] text-[var(--color-mr1-text2)]">Q</span>
+                <span className="text-sm text-[var(--color-mr1-text)]">
+                  {freeQuestions} questões livres
+                </span>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
