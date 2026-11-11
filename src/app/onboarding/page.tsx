@@ -24,6 +24,7 @@ import { getExams } from "@/lib/db/exams"
 import { getGradeLessons } from "@/lib/db/grade-lessons"
 import { createRotation } from "@/lib/db/rotations"
 import { updateUser } from "@/lib/db/users"
+import { generateFullPlan } from "@/lib/engine/generate-plan"
 import { cn } from "@/lib/utils"
 
 const WEEKDAY_LABELS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"]
@@ -106,13 +107,16 @@ export default function OnboardingPage() {
     }
 
     if (currentStep === STEP_COUNT - 1) {
-      // Final step: mark onboarding complete
+      // Final step: generate plan + mark onboarding complete
       setFinishing(true)
       try {
+        await generateFullPlan(lessons)
         await updateUser({ onboarding_completed: true })
         router.push("/hoje")
       } catch (e) {
         console.error(e)
+        // Still navigate even if plan generation fails partially
+        await updateUser({ onboarding_completed: true }).catch(() => {})
         router.push("/hoje")
       }
       return

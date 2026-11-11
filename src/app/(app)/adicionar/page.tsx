@@ -13,8 +13,8 @@ import { getGradeLessons } from "@/lib/db/grade-lessons"
 import { getStudiedLessonIds, createSubject } from "@/lib/db/subjects"
 import { createAgendaItem } from "@/lib/db/agenda"
 import { DEFAULT_USER_ID } from "@/lib/supabase"
-import { calculateFixation, categoryToIncidence, calculateNextReview, getIntervalCap } from "@/lib/engine/review-engine"
-import { FINAL_STRETCH_START } from "@/lib/engine/scheduler"
+import { calculateFixation, categoryToIncidence, getIntervalCap } from "@/lib/engine/review-engine"
+import { scheduleInitialReviews } from "@/lib/engine/schedule-reviews"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 
@@ -147,6 +147,16 @@ export default function AdicionarPage() {
           interval_used: 1, subject_id: savedSubjectId, simulado_id: null, user_id: DEFAULT_USER_ID,
         })
       }
+
+      // Schedule R1-R6 + RF reviews
+      const fixDate = fixationDone ? todayStr : tomorrowStr
+      await scheduleInitialReviews({
+        subjectId: savedSubjectId,
+        effort,
+        incidence,
+        fixationDate: fixDate,
+      })
+
       setStep(3)
     } catch (e) {
       console.error(e)
