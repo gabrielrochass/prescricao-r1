@@ -127,7 +127,7 @@ export default function RevisaoCheckPage() {
 
   const subjectName = item?.subject?.grade_lesson?.name ?? "Materia"
   const reviewLabel = isAfterFixation
-    ? "Fixacao"
+    ? "Fixação"
     : `R${reviewNumber}`
 
   const handleIncrement = useCallback((setter: React.Dispatch<React.SetStateAction<number>>, max?: number) => {
@@ -204,7 +204,7 @@ export default function RevisaoCheckPage() {
   if (!item) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-[var(--color-mr1-text2)]">Item nao encontrado</div>
+        <div className="text-[var(--color-mr1-text2)]">Item não encontrado</div>
       </div>
     )
   }
@@ -217,7 +217,7 @@ export default function RevisaoCheckPage() {
           <CheckCircle2 className="h-10 w-10 text-[var(--color-mr1-action)]" />
         </div>
         <h2 className="font-display text-2xl text-[var(--color-mr1-text)] text-center">
-          {reviewLabel} concluida!
+          {reviewLabel} concluída!
         </h2>
         <p className="text-sm text-[var(--color-mr1-text2)] text-center">
           {subjectName}
@@ -237,7 +237,7 @@ export default function RevisaoCheckPage() {
             </span>
           </div>
           <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
-            {acertos} de {feitas} questoes corretas
+            {acertos} de {feitas} questões corretas
           </p>
         </div>
 
@@ -248,14 +248,14 @@ export default function RevisaoCheckPage() {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-[var(--color-mr1-action)]" />
                 <span className="text-sm font-semibold text-[var(--color-mr1-text)]">
-                  Proxima revisao
+                  Próxima revisão
                 </span>
               </div>
               <p className="text-sm text-[var(--color-mr1-text)]">
                 {format(new Date(nextReviewInfo.nextDate), "dd 'de' MMMM", { locale: ptBR })} ({nextReviewInfo.intervalDays} dias)
               </p>
               <p className="text-xs text-[var(--color-mr1-text2)]">
-                {nextReviewInfo.questions} questoes
+                {nextReviewInfo.questions} questões
               </p>
             </CardContent>
           </Card>
@@ -268,11 +268,11 @@ export default function RevisaoCheckPage() {
               <div className="flex items-center gap-2">
                 <BookOpen className="h-4 w-4 text-[var(--color-mr1-orange)]" />
                 <span className="text-sm font-semibold text-[var(--color-mr1-text)]">
-                  Sugestao: Aula Resumo
+                  Sugestão: Aula Resumo
                 </span>
               </div>
               <p className="text-xs text-[var(--color-mr1-text2)] mt-1">
-                Seu aproveitamento ficou abaixo de 50%. Considere reassistir a aula resumo de {subjectName} antes da proxima revisao.
+                Seu aproveitamento ficou abaixo de 50%. Considere reassistir a aula resumo de {subjectName} antes da próxima revisão.
               </p>
             </CardContent>
           </Card>
@@ -305,7 +305,7 @@ export default function RevisaoCheckPage() {
             </h1>
           </div>
           <p className="text-xs text-[var(--color-mr1-text2)] mt-0.5">
-            {isAfterFixation ? "Fixacao" : `Revisao ${reviewNumber} de 6`}
+            {isAfterFixation ? "Fixação" : `Revisão ${reviewNumber} de 6`}
           </p>
         </div>
       </div>
@@ -315,7 +315,7 @@ export default function RevisaoCheckPage() {
         <CardContent className="p-4 space-y-4">
           <div className="space-y-3">
             <label className="text-sm font-medium text-[var(--color-mr1-text)]">
-              Questoes feitas
+              Questões feitas
             </label>
             <div className="flex items-center justify-center gap-4">
               <button
@@ -391,10 +391,10 @@ export default function RevisaoCheckPage() {
               <Calendar className="h-4 w-4 text-[var(--color-mr1-pink)] mt-0.5 shrink-0" />
               <div>
                 <p className="text-sm font-medium text-[var(--color-mr1-text)]">
-                  Proxima: {nextReviewDate}
+                  Próxima: {nextReviewDate}
                 </p>
                 <p className="text-xs text-[var(--color-mr1-text2)]">
-                  {nextReview.questions} questoes em {nextReview.intervalDays} dias
+                  {nextReview.questions} questões em {nextReview.intervalDays} dias
                 </p>
               </div>
             </div>
@@ -402,7 +402,7 @@ export default function RevisaoCheckPage() {
             <div className="flex items-start gap-3 p-3 rounded-xl bg-[var(--color-mr1-lines)]">
               <Target className="h-4 w-4 text-[var(--color-mr1-text2)] mt-0.5 shrink-0" />
               <p className="text-xs text-[var(--color-mr1-text2)]">
-                Ultima revisao do ciclo ou apos a data da prova
+                Última revisão do ciclo ou após a data da prova
               </p>
             </div>
           )}
@@ -410,7 +410,7 @@ export default function RevisaoCheckPage() {
           {/* Reviews remaining */}
           <div className="flex items-center justify-between">
             <span className="text-xs text-[var(--color-mr1-text2)]">
-              Revisoes restantes ate SES-PE
+              Revisões restantes até SES-PE
             </span>
             <Badge variant="outline" className="text-xs font-semibold border-[var(--color-mr1-lines)]">
               {reviewsRemaining}
@@ -420,7 +420,7 @@ export default function RevisaoCheckPage() {
           {/* Days until exam */}
           <div className="flex items-center justify-between">
             <span className="text-xs text-[var(--color-mr1-text2)]">
-              Dias ate a prova
+              Dias até a prova
             </span>
             <Badge variant="outline" className="text-xs font-semibold border-[var(--color-mr1-lines)]">
               {daysUntilExam}
@@ -432,7 +432,7 @@ export default function RevisaoCheckPage() {
             <div className="flex items-start gap-2 p-3 rounded-xl bg-[var(--color-mr1-butter)]">
               <AlertTriangle className="h-4 w-4 text-[var(--color-mr1-orange)] mt-0.5 shrink-0" />
               <p className="text-xs text-[var(--color-mr1-text)]">
-                Aproveitamento baixo. Considere assistir a <strong>Aula Resumo</strong> antes da proxima revisao.
+                Aproveitamento baixo. Considere assistir a <strong>Aula Resumo</strong> antes da próxima revisão.
               </p>
             </div>
           )}

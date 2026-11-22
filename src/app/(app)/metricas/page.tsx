@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Info } from "lucide-react"
 import { DonutChart } from "@/components/mr1/donut-chart"
+import { InfoTooltip } from "@/components/mr1/info-tooltip"
 import type { Simulado, BigArea } from "@/lib/types"
 import { getCompletedSimulados } from "@/lib/db/simulados"
 import { getSubjectCount } from "@/lib/db/subjects"
@@ -34,17 +34,6 @@ const AREA_BAR_LABEL: Record<BigArea, string> = {
 }
 
 const TOTAL_AULAS = 112
-
-function InfoButton() {
-  return (
-    <button
-      className="flex items-center justify-center min-w-[44px] min-h-[44px] rounded-full border border-[var(--color-mr1-text2)] opacity-40 hover:opacity-70 transition-opacity touch-target"
-      aria-label="Informações"
-    >
-      <Info className="h-3 w-3 text-[var(--color-mr1-text2)]" />
-    </button>
-  )
-}
 
 export default function MetricasPage() {
   const [simulados, setSimulados] = useState<Simulado[]>([])
@@ -114,7 +103,7 @@ export default function MetricasPage() {
 
   const trendSublabel =
     simulados.length >= 2 && totalGain !== 0
-      ? `${totalGain > 0 ? "+" : ""}${totalGain} pontos desde o 1\u00BA`
+      ? `${totalGain > 0 ? "+" : ""}${totalGain} pontos desde o 1º`
       : ""
 
   // Simulado trend bar data
@@ -123,7 +112,7 @@ export default function MetricasPage() {
     const prevPct = i > 0 ? simPct(simulados[i - 1]) : 0
     const delta = i > 0 ? pct - prevPct : 0
     return {
-      label: `${i + 1}\u00BA`,
+      label: `${i + 1}º`,
       pct,
       delta,
       deltaLabel: i > 0 ? `+${delta}` : "",
@@ -166,7 +155,7 @@ export default function MetricasPage() {
       <div className="bg-white rounded-2xl shadow-sm p-4">
         <div className="flex justify-between items-start mb-3">
           <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Cronograma</span>
-          <InfoButton />
+          <InfoTooltip text="Aulas estudadas divididas por 112. Comparado com o percentual que o plano previa para hoje." />
         </div>
         <div className="flex items-center gap-5">
           <DonutChart
@@ -195,7 +184,7 @@ export default function MetricasPage() {
       <div className="bg-white rounded-2xl shadow-sm p-4">
         <div className="flex justify-between items-start mb-3">
           <span className="text-sm font-semibold text-[var(--color-mr1-text)]">Simulados</span>
-          <InfoButton />
+          <InfoTooltip text="Tendência = último simulado menos o primeiro. Cada barra mostra um simulado realizado." />
         </div>
 
         <div className="flex items-center gap-5">

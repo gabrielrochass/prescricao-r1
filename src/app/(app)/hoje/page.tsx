@@ -4,8 +4,9 @@ import { useEffect, useState } from "react"
 import { format, differenceInDays } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { Card, CardContent } from "@/components/ui/card"
-import { Check, ChevronRight, Clock, Info } from "lucide-react"
+import { Check, ChevronRight, Clock } from "lucide-react"
 import { DonutChart } from "@/components/mr1/donut-chart"
+import { InfoTooltip } from "@/components/mr1/info-tooltip"
 import { AgendaBadge } from "@/components/mr1/agenda-badge"
 import type { AgendaItem, AgendaType, Exam, User } from "@/lib/types"
 import {
@@ -28,10 +29,10 @@ function getItemDescription(item: AgendaItem): string {
     case "study":
       return "Aula"
     case "fixation":
-      return `Fixacao, ${item.planned_questions ?? 0} questoes`
+      return `Fixação, ${item.planned_questions ?? 0} questões`
     case "review":
     case "guaranteed_review":
-      return `Revisao, ${item.planned_questions ?? 0} questoes`
+      return `Revisão, ${item.planned_questions ?? 0} questões`
     case "simulado":
       return "Simulado"
     default:
@@ -171,7 +172,7 @@ export default function HojePage() {
                 <span className="text-xs font-medium text-[var(--color-mr1-text2)]">
                   Progresso do dia
                 </span>
-                <Info className="h-3.5 w-3.5 text-[var(--color-mr1-text2)] opacity-60" />
+                <InfoTooltip text="Conta as questões de fixação, revisão e simulado de hoje. A aula não entra na conta de questões." />
               </div>
               <p className="text-sm font-semibold text-[var(--color-mr1-text)]">
                 {doneQuestions} de {dailyTarget} questões
@@ -190,7 +191,7 @@ export default function HojePage() {
             <div className="flex items-center gap-2.5">
               <AgendaBadge type="fixation" className="text-[10px] px-1 py-0 min-w-[20px]" />
               <span className="text-sm text-[var(--color-mr1-text)]">
-                {fixationDone} de {fixationTotal} em fixacao
+                {fixationDone} de {fixationTotal} em fixação
               </span>
             </div>
             {/* Review line */}
@@ -324,7 +325,7 @@ export default function HojePage() {
                 <Clock className="w-5 h-5 text-[#B8860B]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-[var(--color-mr1-text)]">Recuperacao</p>
+                <p className="text-sm font-semibold text-[var(--color-mr1-text)]">Recuperação</p>
                 <p className="text-xs text-[var(--color-mr1-text2)]">
                   {overdueItems.length} {overdueItems.length === 1 ? "item atrasado" : "itens atrasados"}
                 </p>

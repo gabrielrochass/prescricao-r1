@@ -16,10 +16,10 @@ import Link from "next/link"
 const TYPE_ORDER: AgendaType[] = ["study", "fixation", "review", "simulado", "guaranteed_review"]
 const TYPE_LABELS: Record<AgendaType, string> = {
   study: "Estudo",
-  fixation: "Fixacao",
-  review: "Revisao",
+  fixation: "Fixação",
+  review: "Revisão",
   simulado: "Simulado",
-  guaranteed_review: "Revisao Garantida",
+  guaranteed_review: "Revisão Garantida",
 }
 
 export default function RecuperacaoPage() {
@@ -148,7 +148,7 @@ export default function RecuperacaoPage() {
           <Link href="/hoje" className="touch-target flex items-center justify-center">
             <ArrowLeft className="h-5 w-5 text-[var(--color-mr1-text2)]" />
           </Link>
-          <h1 className="font-display text-3xl text-[var(--color-mr1-text)]">Recuperacao</h1>
+          <h1 className="font-display text-3xl text-[var(--color-mr1-text)]">Recuperação</h1>
         </div>
         <div className="flex flex-col items-center justify-center py-20 gap-4">
           <div className="h-16 w-16 rounded-full bg-[var(--color-mr1-orange-bg)] flex items-center justify-center">
@@ -176,7 +176,7 @@ export default function RecuperacaoPage() {
         </div>
 
         <p className="text-sm text-[var(--color-mr1-text2)]">
-          {selectedCount} {selectedCount === 1 ? "item selecionado" : "itens selecionados"} ({selectedQuestions} questoes)
+          {selectedCount} {selectedCount === 1 ? "item selecionado" : "itens selecionados"} ({selectedQuestions} questões)
         </p>
 
         <Card className="border-0 shadow-sm">
@@ -243,7 +243,7 @@ export default function RecuperacaoPage() {
         <Link href="/hoje" className="touch-target flex items-center justify-center">
           <ArrowLeft className="h-5 w-5 text-[var(--color-mr1-text2)]" />
         </Link>
-        <h1 className="font-display text-3xl text-[var(--color-mr1-text)]">Recuperacao</h1>
+        <h1 className="font-display text-3xl text-[var(--color-mr1-text)]">Recuperação</h1>
       </div>
 
       <div className="flex items-center justify-between">
