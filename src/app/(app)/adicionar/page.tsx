@@ -203,19 +203,7 @@ export default function AdicionarPage() {
         </div>
 
         <div className="px-4 space-y-3 flex-1 flex flex-col">
-          {/* Date — editable */}
-          <div className="flex items-center justify-between py-2 border-b border-[#F1E4E9]">
-            <span className="text-[13px] text-[#7C6673]">Data do estudo</span>
-            <input
-              type="date"
-              value={studyDate}
-              max={format(today, "yyyy-MM-dd")}
-              onChange={e => setStudyDate(e.target.value)}
-              className="text-[15px] text-[#4A2B3F] bg-transparent border-none text-right cursor-pointer"
-            />
-          </div>
-
-          {/* Mode toggle: Grade EMR vs Estudo livre */}
+          {/* Mode toggle: Grade EMR vs Estudo livre — FIRST */}
           <div className="flex gap-2">
             <button
               onClick={() => { setIsFreeStudy(false); setFreeStudyName("") }}
@@ -237,15 +225,28 @@ export default function AdicionarPage() {
             </button>
           </div>
 
-          {/* Free study input */}
+          {/* Free study flow */}
           {isFreeStudy && (
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Input
                 placeholder="O que você estudou? Ex: Revisão de ECG, Artigo sobre DPOC..."
                 value={freeStudyName}
                 onChange={e => setFreeStudyName(e.target.value)}
                 className="border-[#F1E4E9] bg-white text-[#4A2B3F]"
               />
+
+              {/* Date — inside the free study flow */}
+              <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-white border border-[#F1E4E9]">
+                <span className="text-[13px] text-[#7C6673]">Quando estudou?</span>
+                <input
+                  type="date"
+                  value={studyDate}
+                  max={format(today, "yyyy-MM-dd")}
+                  onChange={e => setStudyDate(e.target.value)}
+                  className="text-[15px] text-[#4A2B3F] bg-transparent border-none text-right cursor-pointer"
+                />
+              </div>
+
               <p className="text-[10px] text-[#7C6673]">
                 Estudos livres ficam registrados no seu histórico mas não entram na escada de revisão do cronograma EMR.
               </p>
@@ -262,7 +263,6 @@ export default function AdicionarPage() {
                       })
                       setFreeStudyName("")
                       setIsFreeStudy(false)
-                      // Show success briefly
                       alert("Estudo livre registrado!")
                     } catch (e) {
                       console.error(e)
@@ -279,7 +279,7 @@ export default function AdicionarPage() {
             </div>
           )}
 
-          {/* EMR info + progress */}
+          {/* EMR grade flow */}
           {!isFreeStudy && (
             <>
           {/* EMR info + progress */}
@@ -387,11 +387,6 @@ export default function AdicionarPage() {
         </div>
 
         <div className="px-4 space-y-4 pt-2">
-          <div className="flex items-center justify-between py-2 border-b border-[#F1E4E9]">
-            <span className="text-[13px] text-[#7C6673]">Data do estudo</span>
-            <span className="text-[15px] text-[#4A2B3F]">{format(today, "dd/MM/yyyy")}</span>
-          </div>
-
           <div className="border-b border-[#F1E4E9] pb-3">
             <span className="text-[13px] text-[#7C6673]">Aula da grade</span>
             <button onClick={() => setSelectedLesson(null)} className="flex items-center justify-between w-full mt-1">
@@ -399,6 +394,18 @@ export default function AdicionarPage() {
               <ChevronDown className="h-4 w-4 text-[#7C6673]" />
             </button>
             <p className="text-[11px] text-[#7C6673] mt-0.5">{selectedLesson.big_area}, {selectedLesson.category === "essential" ? "Essencial" : selectedLesson.category === "important" ? "Importante" : "Complementar"}</p>
+          </div>
+
+          {/* Date — inside EMR flow, after lesson picked */}
+          <div className="flex items-center justify-between py-2 px-3 rounded-xl bg-white border border-[#F1E4E9]">
+            <span className="text-[13px] text-[#7C6673]">Quando estudou?</span>
+            <input
+              type="date"
+              value={studyDate}
+              max={format(today, "yyyy-MM-dd")}
+              onChange={e => setStudyDate(e.target.value)}
+              className="text-[15px] text-[#4A2B3F] bg-transparent border-none text-right cursor-pointer"
+            />
           </div>
 
           {/* Effort */}
