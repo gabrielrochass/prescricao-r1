@@ -39,9 +39,14 @@ export default function AdicionarPage() {
   const [fixationAcertos, setFixationAcertos] = useState("")
   const [saving, setSaving] = useState(false)
   const [savedSubjectId, setSavedSubjectId] = useState<string | null>(null)
+  const [studyDate, setStudyDate] = useState("") // yyyy-MM-dd, set in useEffect
+  const [freeStudyName, setFreeStudyName] = useState("")
+  const [isFreeStudy, setIsFreeStudy] = useState(false)
 
   useEffect(() => {
-    setToday(new Date())
+    const now = new Date()
+    setToday(now)
+    setStudyDate(format(now, "yyyy-MM-dd"))
     async function load() {
       try {
         const [l, ids] = await Promise.all([getGradeLessons(), getStudiedLessonIds()])
@@ -66,8 +71,8 @@ export default function AdicionarPage() {
 
   const incidence: Incidence = selectedLesson ? categoryToIncidence(selectedLesson.category) : "medium"
   const fixation = calculateFixation(effort, incidence)
-  const todayStr = format(today, "yyyy-MM-dd")
-  const tomorrowStr = format(addDays(today, 1), "yyyy-MM-dd")
+  const studyDateStr = studyDate || format(today, "yyyy-MM-dd")
+  const fixationDateStr = format(addDays(new Date(studyDateStr + "T12:00:00"), 1), "yyyy-MM-dd")
 
   // Generate projected review dates (assuming "bom" accuracy for preview)
   function getProjectedReviews(): { num: number; date: string; interval: number; questions: number; isRF?: boolean }[] {
@@ -111,8 +116,8 @@ export default function AdicionarPage() {
         effort,
       })
       await createAgendaItem({
-        type: "study", review_number: null, planned_date: todayStr,
-        done_date: todayStr, status: "done", planned_questions: null,
+        type: "study", review_number: null, planned_date: studyDateStr,
+        done_date: studyDateStr, status: "done", planned_questions: null,
         done_questions: null, correct_questions: null, interval_used: null,
         subject_id: subject.id, simulado_id: null, user_id: DEFAULT_USER_ID,
       })
@@ -132,8 +137,8 @@ export default function AdicionarPage() {
     try {
       if (fixationDone) {
         await createAgendaItem({
-          type: "fixation", review_number: null, planned_date: todayStr,
-          done_date: todayStr, status: "done",
+          type: "fixation", review_number: null, planned_date: studyDateStr,
+          done_date: studyDateStr, status: "done",
           planned_questions: fixation.questions,
           done_questions: parseInt(fixationFeitas) || fixation.questions,
           correct_questions: parseInt(fixationAcertos) || 0,
@@ -141,7 +146,7 @@ export default function AdicionarPage() {
         })
       } else {
         await createAgendaItem({
-          type: "fixation", review_number: null, planned_date: tomorrowStr,
+          type: "fixation", review_number: null, planned_date: fixationDateStr,
           done_date: null, status: "planned", planned_questions: fixation.questions,
           done_questions: null, correct_questions: null,
           interval_used: 1, subject_id: savedSubjectId, simulado_id: null, user_id: DEFAULT_USER_ID,
@@ -149,7 +154,7 @@ export default function AdicionarPage() {
       }
 
       // Schedule R1-R6 + RF reviews
-      const fixDate = fixationDone ? todayStr : tomorrowStr
+      const fixDate = fixationDone ? studyDateStr : fixationDateStr
       await scheduleInitialReviews({
         subjectId: savedSubjectId,
         effort,
@@ -198,12 +203,85 @@ export default function AdicionarPage() {
         </div>
 
         <div className="px-4 space-y-3 flex-1 flex flex-col">
-          {/* Date */}
+          {/* Date — editable */}
           <div className="flex items-center justify-between py-2 border-b border-[#F1E4E9]">
             <span className="text-[13px] text-[#7C6673]">Data do estudo</span>
-            <span className="text-[15px] text-[#4A2B3F]">{format(today, "dd/MM/yyyy")}</span>
+            <input
+              type="date"
+              value={studyDate}
+              max={format(today, "yyyy-MM-dd")}
+              onChange={e => setStudyDate(e.target.value)}
+              className="text-[15px] text-[#4A2B3F] bg-transparent border-none text-right cursor-pointer"
+            />
           </div>
 
+          {/* Mode toggle: Grade EMR vs Estudo livre */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setIsFreeStudy(false); setFreeStudyName("") }}
+              className={cn(
+                "flex-1 py-2.5 rounded-xl text-[13px] font-medium transition-all active:scale-95",
+                !isFreeStudy ? "bg-[#C23B6C] text-white" : "bg-white border border-[#F1E4E9] text-[#4A2B3F]"
+              )}
+            >
+              Grade EMR
+            </button>
+            <button
+              onClick={() => { setIsFreeStudy(true); setSelectedLesson(null) }}
+              className={cn(
+                "flex-1 py-2.5 rounded-xl text-[13px] font-medium transition-all active:scale-95",
+                isFreeStudy ? "bg-[#C23B6C] text-white" : "bg-white border border-[#F1E4E9] text-[#4A2B3F]"
+              )}
+            >
+              Estudo livre
+            </button>
+          </div>
+
+          {/* Free study input */}
+          {isFreeStudy && (
+            <div className="space-y-2">
+              <Input
+                placeholder="O que você estudou? Ex: Revisão de ECG, Artigo sobre DPOC..."
+                value={freeStudyName}
+                onChange={e => setFreeStudyName(e.target.value)}
+                className="border-[#F1E4E9] bg-white text-[#4A2B3F]"
+              />
+              <p className="text-[10px] text-[#7C6673]">
+                Estudos livres ficam registrados no seu histórico mas não entram na escada de revisão do cronograma EMR.
+              </p>
+              {freeStudyName.trim() && (
+                <Button
+                  onClick={async () => {
+                    setSaving(true)
+                    try {
+                      await createAgendaItem({
+                        type: "study", review_number: null, planned_date: studyDateStr,
+                        done_date: studyDateStr, status: "done", planned_questions: null,
+                        done_questions: null, correct_questions: null, interval_used: null,
+                        subject_id: null, simulado_id: null, user_id: DEFAULT_USER_ID,
+                      })
+                      setFreeStudyName("")
+                      setIsFreeStudy(false)
+                      // Show success briefly
+                      alert("Estudo livre registrado!")
+                    } catch (e) {
+                      console.error(e)
+                    } finally {
+                      setSaving(false)
+                    }
+                  }}
+                  disabled={saving}
+                  className="w-full h-12 bg-[#C23B6C] text-white text-[15px] font-semibold rounded-xl active:scale-95"
+                >
+                  {saving ? <><span className="mr1-spinner" /> Salvando...</> : "Registrar estudo livre"}
+                </Button>
+              )}
+            </div>
+          )}
+
+          {/* EMR info + progress */}
+          {!isFreeStudy && (
+            <>
           {/* EMR info + progress */}
           <div className="p-3 rounded-xl bg-white border border-[#F1E4E9]">
             <div className="flex items-center justify-between mb-2">
@@ -292,6 +370,8 @@ export default function AdicionarPage() {
               )
             })}
           </div>
+          </>
+          )}
         </div>
       </div>
     )
