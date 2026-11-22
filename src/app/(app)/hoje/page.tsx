@@ -24,23 +24,39 @@ import Link from "next/link"
 
 // ─── Helpers ───
 
+function getItemName(item: AgendaItem): string {
+  if (item.subject?.grade_lesson?.name) return item.subject.grade_lesson.name
+  // Skeleton slots (no subject assigned)
+  if (item.type === "study") return "Estudo novo"
+  if (item.type === "fixation") return "Fixação do dia anterior"
+  if (item.type === "simulado") return "Simulado"
+  return "Item"
+}
+
 function getItemDescription(item: AgendaItem): string {
+  const isSkeleton = !item.subject_id
   switch (item.type) {
     case "study":
-      return "Aula"
+      return isSkeleton ? "Escolha uma aula em Adicionar" : "Aula"
     case "fixation":
-      return `Fixação, ${item.planned_questions ?? 0} questões`
+      return isSkeleton
+        ? `${item.planned_questions ?? 0} questões · escolha o tema`
+        : `Fixação, ${item.planned_questions ?? 0} questões`
     case "review":
     case "guaranteed_review":
       return `Revisão, ${item.planned_questions ?? 0} questões`
     case "simulado":
-      return "Simulado"
+      return "100 questões, 5 áreas"
     default:
       return ""
   }
 }
 
 function getItemLink(item: AgendaItem): string | null {
+  // Skeleton slots (no subject) → go to Adicionar to pick a topic
+  if (!item.subject_id && (item.type === "study" || item.type === "fixation")) {
+    return "/adicionar"
+  }
   if (item.type === "review" || item.type === "fixation" || item.type === "guaranteed_review") {
     return `/revisao/${item.id}`
   }
@@ -291,7 +307,7 @@ export default function HojePage() {
                         : "text-[var(--color-mr1-text)]",
                     )}
                   >
-                    {item.subject?.grade_lesson?.name ?? "Simulado"}
+                    {getItemName(item)}
                   </p>
                   {description && (
                     <p className="text-xs text-[var(--color-mr1-text2)] mt-0.5">{description}</p>

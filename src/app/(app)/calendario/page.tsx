@@ -50,7 +50,11 @@ const TYPE_LETTER: Record<AgendaType, string> = {
 
 function getItemName(item: AgendaItem): string {
   if (item.type === "simulado") return "Simulado"
-  return item.subject?.grade_lesson?.name ?? "Sem nome"
+  if (item.subject?.grade_lesson?.name) return item.subject.grade_lesson.name
+  // Skeleton slots
+  if (item.type === "study") return "Estudo novo"
+  if (item.type === "fixation") return "Fixação"
+  return "Item"
 }
 
 function getItemDescription(item: AgendaItem): string {
